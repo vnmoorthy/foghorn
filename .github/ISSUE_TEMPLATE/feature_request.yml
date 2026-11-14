@@ -1,0 +1,35 @@
+name: Feature request
+description: Suggest a new persona check, fix recipe or product improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Who is affected (for example screen-reader users, keyboard-only users, developers fixing issues) and what do they run into today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: input
+    id: wcag
+    attributes:
+      label: Related WCAG success criterion (if any)
+      placeholder: "e.g. 2.4.7 Focus Visible"
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: principles
+    attributes:
+      label: Project principles
+      options:
+        - label: This keeps fixes source-level (no overlays) and behind the human approval gate.
+          required: true
+        - label: I'm willing to help implement this.

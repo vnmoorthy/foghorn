@@ -28,7 +28,44 @@ type Scan = {
 };
 type Summary = { id: string; url: string; status: string; score?: number; grade?: string; risk?: string; title?: string; screenshot?: string; createdAt: string; violations: number; label?: string; verifiedFrom?: string; agent?: string };
 
+// ---------- replay mode (static GitHub Pages build of real recorded runs) ----------
+export const REPLAY = import.meta.env.VITE_REPLAY === '1';
+const BASE = import.meta.env.BASE_URL;
+const asset = (p?: string | null) => (p && REPLAY && p.startsWith('/') ? BASE + p.slice(1) : p || '');
+const dl = (id: string, f: string) => (REPLAY ? `${BASE}replay/exports/${id}/${f}` : `/api/scans/${id}/${f}`);
+const REPO = 'https://github.com/vnmoorthy/foghorn';
+const REPLAY_MSG = 'This is an interactive replay of real recorded Foghorn runs. Clone the repo and run it locally to dive into any website live.';
+let replayIndex: any = null;
+const replayScans = new Map<string, any>();
+async function replayApi(p: string, init?: RequestInit) {
+  const method = init?.method || 'GET';
+  const idx = replayIndex || (replayIndex = await fetch(BASE + 'replay/index.json').then((r) => r.json()));
+  const getScan = async (id: string) => {
+    if (replayScans.has(id)) return replayScans.get(id);
+    const r = await fetch(`${BASE}replay/scans/${id}.json`);
+    if (!r.ok) throw new Error('That run is not part of this replay.');
+    const s = await r.json(); replayScans.set(id, s); return s;
+  };
+  const body = init?.body ? JSON.parse(String(init.body)) : {};
+  let m: RegExpMatchArray | null;
+  if (p === '/api/status') return idx.status;
+  if (p === '/api/scans' && method === 'GET') return idx.scans;
+  if (p === '/api/scans' && method === 'POST') { const hit = idx.demos[body.url]; if (hit) return { id: hit }; throw new Error(REPLAY_MSG); }
+  if ((m = p.match(/^\/api\/scans\/([^/]+)$/))) return getScan(m[1]);
+  if ((m = p.match(/^\/api\/scans\/([^/]+)\/evidence\/verify$/))) return (await getScan(m[1])).__chain;
+  if ((m = p.match(/^\/api\/scans\/([^/]+)\/fixes\/approve-all$/))) { const s = await getScan(m[1]); s.fixes.forEach((f: any) => (f.approved = true)); return { ok: true }; }
+  if ((m = p.match(/^\/api\/scans\/([^/]+)\/fixes\/([^/]+)\/approve$/))) { const s = await getScan(m[1]); const f = s.fixes.find((x: any) => x.id === m![2]); f.approved = body.approved !== false; return f; }
+  if ((m = p.match(/^\/api\/scans\/([^/]+)\/verify$/))) { const v = idx.verify[m[1]]; if (v) return { id: v }; throw new Error(REPLAY_MSG); }
+  if (p.endsWith('/ai')) throw new Error('“Improve with AI” calls NY Token Exchange live. Run Foghorn locally with NYTE_API_KEY.');
+  if (p.endsWith('/agent')) throw new Error('Replay mode: the recorded blind-agent runs are shown below. Run Foghorn locally to give the agent a new task.');
+  if (p === '/api/monitors' && method === 'POST') return { id: 'replay', provider: 'replay — run locally for live monitors' };
+  if (p === '/api/monitors') return [];
+  if (p === '/api/demo/regress') { if (method === 'POST') throw new Error(REPLAY_MSG); return { regression: false }; }
+  throw new Error(REPLAY_MSG);
+}
+
 const api = async (p: string, init?: RequestInit) => {
+  if (REPLAY) return replayApi(p, init);
   const r = await fetch(p, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers || {}) } });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(j.error || r.statusText);
@@ -79,6 +116,14 @@ export default function App() {
         <filter id="tritanopia"><feColorMatrix values="0.95 0.05 0 0 0  0 0.433 0.567 0 0  0 0.475 0.525 0 0  0 0 0 1 0" /></filter>
         <filter id="achromatopsia"><feColorMatrix values="0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0.299 0.587 0.114 0 0  0 0 0 1 0" /></filter>
       </svg>
+      {REPLAY && (
+        <div className="relative z-50 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-gradient-to-r from-beam/20 via-beam/10 to-tide/20 px-4 py-2 text-center text-xs text-slate-200">
+          <span className="rounded bg-beam px-1.5 py-0.5 font-semibold text-ink-950">LIVE REPLAY</span>
+          <span>You're exploring real Foghorn runs recorded at the Boat Hackathon. Every button works. Clone it to dive into any site live.</span>
+          <a href={REPO} className="font-semibold text-beam underline underline-offset-2">github.com/vnmoorthy/foghorn ↗</a>
+          <a href={BASE + 'deck/'} className="font-semibold text-tide underline underline-offset-2">Pitch deck ↗</a>
+        </div>
+      )}
       <TopBar status={status} route={route} />
       <AnimatePresence mode="wait">
         {scanId ? <ScanView key={scanId} id={scanId} status={status} /> : route === '/history' ? <HistoryView key="h" /> : route === '/monitors' ? <MonitorsView key="m" /> : <Home key="home" status={status} />}
@@ -103,7 +148,7 @@ function Pill({ ok, icon, label, value }: { ok: boolean; icon: React.ReactNode; 
     <div className="hidden lg:flex items-center gap-2 rounded-full glass px-3 py-1.5 text-xs" title={value}>
       <span className={`h-1.5 w-1.5 rounded-full ${ok ? 'bg-kelp shadow-[0_0_8px_#2ee59d]' : 'bg-beam'}`} />
       {icon}<span className="text-slate-300">{label}</span>
-      <span className="text-slate-500 max-w-[140px] truncate">{ok ? 'live' : 'fallback'}</span>
+      <span className="text-slate-500 max-w-[140px] truncate">{REPLAY ? 'recorded' : ok ? 'live' : 'fallback'}</span>
     </div>
   );
 }
@@ -177,7 +222,7 @@ function Home({ status }: { status: any }) {
         </motion.form>
         {err && <p role="alert" className="mt-3 text-sm text-coral">{err}</p>}
         <div className="mx-auto mt-6 flex max-w-3xl flex-wrap justify-center gap-2">
-          {DEMOS.map((d) => (
+          {DEMOS.filter((d) => !REPLAY || !d.url.includes('context.dev')).map((d) => (
             <button key={d.url} onClick={() => { setUrl(d.url); setGoal(d.goal); start(d.url, d.goal); }} className="group flex items-center gap-2 rounded-xl glass px-4 py-2 text-left text-sm transition hover:border-beam/40">
               <span className={`h-2 w-2 rounded-full ${d.sub.includes('broken') ? 'bg-coral' : d.sub.includes('accessible') ? 'bg-kelp' : 'bg-tide'}`} />
               <span><span className="block text-slate-200">{d.label}</span><span className="block text-[11px] text-slate-500">{d.sub}</span></span>
@@ -220,7 +265,7 @@ function ScanCard({ s }: { s: Summary }) {
   return (
     <button onClick={() => go(`/scan/${s.id}`)} className="group overflow-hidden rounded-2xl glass text-left transition hover:border-beam/40">
       <div className="relative h-32 overflow-hidden bg-ink-800">
-        {s.screenshot && <img src={s.screenshot} alt="" className="w-full object-cover object-top opacity-80 transition group-hover:opacity-100" />}
+        {s.screenshot && <img src={asset(s.screenshot)} alt="" className="w-full object-cover object-top opacity-80 transition group-hover:opacity-100" />}
         <div className="absolute right-2 top-2 rounded-lg bg-ink-950/80 px-2 py-1 font-mono text-sm font-semibold" style={{ color: scoreColor(s.score) }}>{s.score ?? '—'}</div>
         {s.verifiedFrom && <div className="absolute left-2 top-2 rounded-md bg-kelp/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-kelp">verified fixes</div>}
       </div>
@@ -242,6 +287,7 @@ function useScan(id: string) {
   const refresh = useCallback(() => api(`/api/scans/${id}`).then(setScan).catch(() => {}), [id]);
   useEffect(() => {
     refresh();
+    if (REPLAY) return;
     const es = new EventSource(`/api/scans/${id}/events`);
     es.onmessage = (m) => {
       const e = JSON.parse(m.data);
@@ -320,9 +366,9 @@ function ScanView({ id, status }: { id: string; status: any }) {
             {scan.vm && <span className="ml-auto flex items-center gap-1 text-tide"><Cpu size={12} />boat.dev VM {scan.vm.id} · {scan.vm.status}</span>}
           </div>
           {scan.vm?.desktopUrl && <iframe title="Live boat.dev desktop" src={scan.vm.desktopUrl} allow="autoplay; fullscreen; clipboard-read; clipboard-write" className="mb-3 aspect-video w-full rounded-xl border border-tide/30" />}
-          {running && live && <div className="mb-2 overflow-hidden rounded-xl border border-beam/30"><div className="flex items-center gap-2 bg-beam/10 px-3 py-1 text-xs text-beam"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-coral" />LIVE · agent's browser</div><img src={live} alt="Live view of the agent's browser" className="w-full" /></div>}
+          {running && live && <div className="mb-2 overflow-hidden rounded-xl border border-beam/30"><div className="flex items-center gap-2 bg-beam/10 px-3 py-1 text-xs text-beam"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-coral" />LIVE · agent's browser</div><img src={asset(live)} alt="Live view of the agent's browser" className="w-full" /></div>}
           {home?.screenshot ? (
-            <PageCanvas src={home.screenshot} size={home.size} vision={vision} overlay={overlay} scan={scan} hl={hl} />
+            <PageCanvas src={asset(home.screenshot)} size={home.size} vision={vision} overlay={overlay} scan={scan} hl={hl} />
           ) : (
             <div className="grid aspect-video place-items-center rounded-xl bg-ink-850 text-slate-500"><div className="text-center"><Loader2 className="mx-auto mb-2 animate-spin text-beam" />Launching browser…</div></div>
           )}
@@ -380,9 +426,17 @@ function ScoreDial({ score, running }: { score?: number; running: boolean }) {
 
 function RiskBadge({ risk }: { risk: NonNullable<Scan['risk']> }) {
   const [open, setOpen] = useState(false);
+  const boxRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const down = (e: MouseEvent) => { if (boxRef.current && !boxRef.current.contains(e.target as Node)) setOpen(false); };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', down); document.addEventListener('keydown', esc);
+    return () => { document.removeEventListener('mousedown', down); document.removeEventListener('keydown', esc); };
+  }, [open]);
   const col = risk.level === 'LOW' ? 'text-kelp border-kelp/30' : risk.level === 'ELEVATED' ? 'text-beam border-beam/30' : 'text-coral border-coral/40';
   return (
-    <div className="relative">
+    <div className="relative" ref={boxRef}>
       <button onClick={() => setOpen(!open)} aria-expanded={open} className={`rounded-2xl border bg-ink-900/60 px-5 py-3 text-left ${col}`}>
         <div className="text-xs text-slate-500">Litigation risk indicator</div>
         <div className="flex items-center gap-2 text-xl font-semibold"><AlertTriangle size={18} />{risk.level}<span className="font-mono text-sm text-slate-500">{risk.score}/100</span></div>
@@ -543,7 +597,8 @@ function AgentPanel({ scan, live, refresh }: { scan: Scan; live: Step | null; re
     }
   }, [last, voice, live]);
   useEffect(() => { if (last) for (const s of last.steps) spoken.current.add(last.id + s.n); }, []); // don't replay history on open
-  const run = async (patched: boolean) => { speechSynthesis.cancel(); await api(`/api/scans/${scan.id}/agent`, { method: 'POST', body: JSON.stringify({ goal, patched }) }); setTimeout(refresh, 300); };
+  const [note, setNote] = useState('');
+  const run = async (patched: boolean) => { speechSynthesis.cancel(); setNote(''); try { await api(`/api/scans/${scan.id}/agent`, { method: 'POST', body: JSON.stringify({ goal, patched }) }); setTimeout(refresh, 300); } catch (e: any) { setNote(e.message); } };
   return (
     <div>
       <div className="rounded-xl bg-ink-900/60 p-4 ring-1 ring-white/5">
@@ -554,6 +609,7 @@ function AgentPanel({ scan, live, refresh }: { scan: Scan; live: Step | null; re
         <div className="mt-3 flex flex-wrap gap-2">
           <button disabled={running || scan.status !== 'done'} onClick={() => run(false)} className="flex items-center gap-2 rounded-lg bg-beam px-4 py-2 text-sm font-semibold text-ink-950 disabled:opacity-50">{running ? <Loader2 size={15} className="animate-spin" /> : <Play size={15} />}Run blind agent</button>
           {scan.fixes.length > 0 && <button disabled={running || scan.status !== 'done'} onClick={() => run(true)} className="flex items-center gap-2 rounded-lg border border-kelp/40 px-4 py-2 text-sm text-kelp disabled:opacity-50"><FlaskConical size={15} />Run with Foghorn fixes</button>}
+          {note && <div role="status" className="w-full text-xs text-beam">{note}</div>}
           <label className="ml-auto flex items-center gap-1.5 text-xs text-slate-400"><input type="checkbox" checked={voice} onChange={(e) => setVoice(e.target.checked)} className="accent-[#ffd166]" />narrate aloud</label>
         </div>
       </div>
@@ -573,7 +629,7 @@ function AgentPanel({ scan, live, refresh }: { scan: Scan; live: Step | null; re
                     {s.heard?.length ? <span className="rounded bg-beam/10 px-1.5 text-beam">heard: {s.heard.join(' | ').slice(0, 90)}</span> : null}
                   </div>
                 </div>
-                {s.shot && <img src={s.shot} alt={`Agent view at step ${s.n}`} className="h-14 w-24 shrink-0 rounded-md object-cover object-top ring-1 ring-white/10" />}
+                {s.shot && <img src={asset(s.shot)} alt={`Agent view at step ${s.n}`} className="h-14 w-24 shrink-0 rounded-md object-cover object-top ring-1 ring-white/10" />}
               </motion.div>
             ))}
             {r.status === 'running' && <div className="flex items-center gap-2 p-3 text-sm text-beam"><Loader2 size={14} className="animate-spin" />listening…</div>}
@@ -661,7 +717,7 @@ function FixesPanel({ scan, refresh, status }: { scan: Scan; refresh: () => void
   const approved = scan.fixes.filter((f) => f.approved).length;
   const approve = async (f: Fix, v: boolean) => { await api(`/api/scans/${scan.id}/fixes/${f.id}/approve`, { method: 'POST', body: JSON.stringify({ approved: v }) }); refresh(); };
   const ai = async (f: Fix) => { setBusy(f.id); setMsg(''); try { const r = await api(`/api/scans/${scan.id}/fixes/${f.id}/ai`, { method: 'POST' }); setMsg(`AI fix generated via ${status?.providers?.llm} · $${r.costUsd}`); refresh(); } catch (e: any) { setMsg(e.message); } setBusy(null); };
-  const verify = async () => { setBusy('verify'); await api(`/api/scans/${scan.id}/fixes/approve-all`, { method: 'POST' }); const { id } = await api(`/api/scans/${scan.id}/verify`, { method: 'POST' }); go(`/scan/${id}`); };
+  const verify = async () => { setBusy('verify'); try { await api(`/api/scans/${scan.id}/fixes/approve-all`, { method: 'POST' }); const { id } = await api(`/api/scans/${scan.id}/verify`, { method: 'POST' }); go(`/scan/${id}`); } catch (e: any) { setMsg(e.message); setBusy(null); } };
   return (
     <div>
       <div className="sticky top-0 z-10 -mx-4 -mt-4 mb-3 border-b border-white/5 bg-ink-850/95 p-4 backdrop-blur">
@@ -670,7 +726,7 @@ function FixesPanel({ scan, refresh, status }: { scan: Scan; refresh: () => void
           <button onClick={verify} disabled={busy === 'verify' || !!scan.verifiedFrom} className="ml-auto flex items-center gap-2 rounded-lg bg-kelp px-4 py-2 text-sm font-semibold text-ink-950 disabled:opacity-50">{busy === 'verify' ? <Loader2 size={15} className="animate-spin" /> : <ShieldCheck size={15} />}Approve all &amp; verify in sandbox</button>
         </div>
         <div className="mt-2 flex flex-wrap gap-2 text-xs">
-          {[['fixes.diff', 'Source diff'], ['report.md', 'Report'], ['patch.js', 'Sandbox patch'], ['evidence.json', 'Evidence']].map(([f, l]) => <a key={f} href={`/api/scans/${scan.id}/${f}`} className="flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-slate-300 hover:bg-white/10"><Download size={12} />{l}</a>)}
+          {[['fixes.diff', 'Source diff'], ['report.md', 'Report'], ['patch.js', 'Sandbox patch'], ['evidence.json', 'Evidence']].map(([f, l]) => <a key={f} href={dl(scan.id, f)} className="flex items-center gap-1 rounded-md bg-white/5 px-2 py-1 text-slate-300 hover:bg-white/10"><Download size={12} />{l}</a>)}
         </div>
         <div className="mt-2 text-[11px] text-slate-500">Foghorn never ships an overlay. Fixes are source diffs you merge. The patch only runs inside the sandbox to prove each fix works.</div>
         {msg && <div role="status" className="mt-2 text-xs text-beam">{msg}</div>}
@@ -707,14 +763,14 @@ function EvidencePanel({ scan }: { scan: Scan }) {
   const [chain, setChain] = useState<any>(null);
   const [mon, setMon] = useState<any>(null);
   const check = async () => setChain(await api(`/api/scans/${scan.id}/evidence/verify`));
-  const watch = async () => setMon(await api('/api/monitors', { method: 'POST', body: JSON.stringify({ scanId: scan.id }) }));
+  const watch = async () => { try { setMon(await api('/api/monitors', { method: 'POST', body: JSON.stringify({ scanId: scan.id }) })); } catch {} };
   return (
     <div>
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-xl bg-white/[0.03] p-3 ring-1 ring-white/5">
           <div className="flex items-center gap-2 text-sm font-medium"><ScrollText size={15} className="text-beam" />Tamper-evident ledger</div>
           <p className="mt-1 text-xs text-slate-500">Every agent action, screenshot and finding is SHA-256 hash-chained, so counsel gets a defensible record.</p>
-          <div className="mt-2 flex gap-2"><button onClick={check} className="rounded-md bg-white/5 px-2 py-1 text-xs hover:bg-white/10">Verify chain</button><a href={`/api/scans/${scan.id}/evidence.json`} className="rounded-md bg-white/5 px-2 py-1 text-xs hover:bg-white/10">Export</a></div>
+          <div className="mt-2 flex gap-2"><button onClick={check} className="rounded-md bg-white/5 px-2 py-1 text-xs hover:bg-white/10">Verify chain</button><a href={dl(scan.id, 'evidence.json')} className="rounded-md bg-white/5 px-2 py-1 text-xs hover:bg-white/10">Export</a></div>
           {chain && <div className={`mt-2 text-xs ${chain.ok ? 'text-kelp' : 'text-coral'}`}>{chain.ok ? `✓ ${chain.length} entries intact · head ${String(chain.head).slice(0, 16)}…` : `✗ chain broken at #${chain.brokenAt}`}</div>}
         </div>
         <div className="rounded-xl bg-white/[0.03] p-3 ring-1 ring-white/5">
@@ -759,12 +815,14 @@ function MonitorsView() {
   const load = () => api('/api/monitors').then(setList).catch(() => {});
   useEffect(() => {
     load(); api('/api/demo/regress').then((r) => setReg(r.regression));
+    if (REPLAY) return;
     const es = new EventSource('/api/monitors/events');
     es.onmessage = (m) => { const e = JSON.parse(m.data); setEvents((x) => [e.type === 'monitor.alert' ? `🚨 ${e.alert.msg}` : `↻ re-auditing (${e.scanId})`, ...x].slice(0, 20)); load(); if (e.type === 'monitor.alert' && e.alert.delta < 0) speak('Regression detected. ' + e.alert.msg, 1.1); };
     const t = setInterval(load, 5000);
     return () => { es.close(); clearInterval(t); };
   }, []);
-  const toggle = async () => { const r = await api('/api/demo/regress', { method: 'POST', body: JSON.stringify({ on: !reg }) }); setReg(r.regression); };
+  const [note, setNote] = useState('');
+  const toggle = async () => { try { const r = await api('/api/demo/regress', { method: 'POST', body: JSON.stringify({ on: !reg }) }); setReg(r.regression); } catch (e: any) { setNote(e.message); } };
   return (
     <motion.main initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mx-auto max-w-6xl px-5 py-8">
       <div className="flex flex-wrap items-end gap-4">
@@ -774,6 +832,7 @@ function MonitorsView() {
           <button onClick={toggle} className={`mt-1 flex items-center gap-2 rounded-lg px-3 py-1.5 font-medium ${reg ? 'bg-coral text-ink-950' : 'bg-white/10'}`}><Zap size={14} />{reg ? 'Bad deploy is live (click to roll back)' : 'Ship a bad deploy'}</button>
         </div>
       </div>
+      {note && <div role="status" className="mt-4 rounded-xl bg-beam/10 p-3 text-sm text-beam">{note}</div>}
       {events.length > 0 && <div className="mt-4 rounded-xl bg-ink-900/70 p-3 font-mono text-xs text-slate-300">{events.map((e, i) => <div key={i}>{e}</div>)}</div>}
       <div className="mt-6 space-y-3">
         {list.length === 0 && <Empty icon={Bell} text="No monitors yet. Open a dive → Evidence → Start monitoring." />}

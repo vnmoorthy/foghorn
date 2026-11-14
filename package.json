@@ -1,0 +1,19 @@
+{
+  "name": "foghorn-monorepo",
+  "private": true,
+  "description": "Foghorn: hear your website the way a blind customer does, then fix it.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vnmoorthy/foghorn.git"
+  },
+  "scripts": {
+    "dev": "npm --prefix web run dev",
+    "build": "npm --prefix web run build",
+    "start": "npm --prefix web start",
+    "setup": "npm --prefix web install"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

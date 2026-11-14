@@ -1,0 +1,75 @@
+name: Accessibility finding (false positive / false negative)
+description: A Foghorn persona reported something that isn't a real barrier, or missed one that is.
+title: "[Finding]: "
+labels: ["accuracy", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Accurate findings matter more than anything else in Foghorn. Reports from disabled users and accessibility practitioners are especially welcome.
+        Only share URLs you have permission to test. If the page is private, a minimal HTML snippet that reproduces the issue is ideal.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Type of error
+      options:
+        - False positive (reported, but not a real barrier)
+        - False negative (real barrier that was missed)
+        - Wrong severity or wrong WCAG mapping
+        - Incorrect suggested fix
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL
+      description: Public URL or `/demo/...` path where this reproduces.
+      placeholder: https://example.com/checkout
+    validations:
+      required: true
+  - type: dropdown
+    id: persona
+    attributes:
+      label: Persona
+      options:
+        - WCAG Auditor (axe-core)
+        - Screen-reader user
+        - Keyboard-only user
+        - Low-vision & color-blind
+        - Motor / tremor (target size)
+        - Cognitive load (reading level)
+        - Blind agent run
+        - Risk indicator
+    validations:
+      required: true
+  - type: input
+    id: wcag
+    attributes:
+      label: WCAG success criterion
+      placeholder: "e.g. 1.1.1 Non-text Content, 2.1.2 No Keyboard Trap"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: What should Foghorn have reported (or not reported)?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: What Foghorn reported. Include the rule id, selector, transcript lines or agent verdict if you have them.
+    validations:
+      required: true
+  - type: textarea
+    id: snippet
+    attributes:
+      label: Minimal HTML snippet (optional)
+      render: html
+  - type: input
+    id: at
+    attributes:
+      label: Assistive technology used to confirm (optional)
+      placeholder: "e.g. NVDA 2024.4 + Firefox, VoiceOver + Safari, keyboard only"

@@ -14,10 +14,20 @@
 [![Context.dev](https://img.shields.io/badge/Context.dev-change%20monitors-0e1729?style=flat-square&labelColor=04070d&color=ffd166)](https://context.dev)
 [![NY Token Exchange](https://img.shields.io/badge/NY%20Token%20Exchange-ZDR-0e1729?style=flat-square&labelColor=04070d&color=ff5d73)](#configuration)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](CONTRIBUTING.md)
+[![CI](https://github.com/vnmoorthy/foghorn/actions/workflows/ci.yml/badge.svg)](https://github.com/vnmoorthy/foghorn/actions/workflows/ci.yml)
+
+<h3>
+  <a href="https://vnmoorthy.github.io/foghorn/">▶ Try the live demo</a> &nbsp;·&nbsp;
+  <a href="https://vnmoorthy.github.io/foghorn/deck/">🎞 Pitch deck</a> &nbsp;·&nbsp;
+  <a href="https://vnmoorthy.github.io/foghorn/demo/driftwood.html">🛒 The broken demo store</a>
+</h3>
+<sub>The live demo is an interactive replay of real recorded runs. Every tab, overlay, simulation, playback and export works in your browser. Run it locally to dive into any site.</sub>
+
+<a href="https://vnmoorthy.github.io/foghorn/"><img src="assets/demo.gif" alt="Foghorn demo: scan a broken store, hear the screen reader, watch the blind agent fail, approve fixes, verify: score 10 → 73 and the agent completes checkout" width="100%" /></a>
 
 **Foghorn runs a fleet of disability personas against your site, plays you what a screen reader actually says, sends a blind AI agent to try your checkout, then ships sandbox-verified fixes with a tamper-evident audit trail.**
 
-[Quickstart](#quickstart) · [How it works](#how-it-works) · [API](#api-reference) · [Deploy on boat.dev](#deploy-on-boatdev) · [Roadmap](#roadmap)
+[Quickstart](#quickstart) · [How it works](#how-it-works) · [Architecture](docs/ARCHITECTURE.md) · [API](#api-reference) · [Deploy on boat.dev](#deploy-on-boatdev) · [50-judge validation](research/README.md) · [Roadmap](#roadmap)
 
 <sub>Built at the <a href="https://boathackathon.com">Boat Hackathon</a>, aboard the Historic Klamath, Pier 9, San Francisco.</sub>
 
