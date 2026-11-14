@@ -1,0 +1,83 @@
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: .foot-grid > div:nth-child(1) > p
+--- before
++++ after
+- <p>Gear for the wet side of the map. Designed in Astoria, Oregon and field-tested from Tofino to Big Sur.</p>
++ <p style="color: #697078">Gear for the wet side of the map. Designed in Astoria, Oregon and field-tested from Tofino to Big Sur.</p>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(1) > a[href$="#shop"]
+--- before
++++ after
+- <a href="#shop">Rain Gear</a>
++ <a style="color: #697078" href="#shop">Rain Gear</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(2) > a[href$="#shop"]
+--- before
++++ after
+- <a href="#shop">Footwear</a>
++ <a style="color: #697078" href="#shop">Footwear</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(3) > a[href$="#shop"]
+--- before
++++ after
+- <a href="#shop">Packs &amp; Bags</a>
++ <a style="color: #697078" href="#shop">Packs &amp; Bags</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(4) > a[href$="#shop"]
+--- before
++++ after
+- <a href="#shop">Camp Lighting</a>
++ <a style="color: #697078" href="#shop">Camp Lighting</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(5) > a[href="#"]
+--- before
++++ after
+- <a href="#">Gift Cards</a>
++ <a style="color: #697078" href="#">Gift Cards</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(1) > a[href="#"]
+--- before
++++ after
+- <a href="#">Shipping</a>
++ <a style="color: #697078" href="#">Shipping</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(2) > a[href="#"]
+--- before
++++ after
+- <a href="#">Returns &amp; Repairs</a>
++ <a style="color: #697078" href="#">Returns &amp; Repairs</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: div:nth-child(3) > .foot-links > li:nth-child(3) > a[href="#"]
+--- before
++++ after
+- <a href="#">Size Guide</a>
++ <a style="color: #697078" href="#">Size Guide</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: div:nth-child(3) > .foot-links > li:nth-child(4) > a[href="#"]
+--- before
++++ after
+- <a href="#">Contact Us</a>
++ <a style="color: #697078" href="#">Contact Us</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(1) > a[href$="#about"]
+--- before
++++ after
+- <a href="#about">Our Story</a>
++ <a style="color: #697078" href="#about">Our Story</a>
+
+# Contrast 2.29:1 → 4.58:1 (color #9aa5b1 → #697078)
+# WCAG wcag143 · serious · selector: li:nth-child(2) > a[href$="#journal"]
+--- before
++++ after
+- <a href="#journal">Journal</a>
++ <a style="color: #697078" href="#journal">Journal</a>

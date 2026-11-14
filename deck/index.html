@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foghorn Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#04070d; --bg2:#0a1220; --panel:#0d1726; --line:#1b2a40;
+  --ink:#eef3fb; --mute:#8a9bb4; --dim:#5a6b85;
+  --beacon:#ffd166; --tide:#4cc9f0; --coral:#ff5d73; --green:#2ee59d;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --serif:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--ink);font-family:var(--sans);overflow:hidden}
+#viewport{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 120%,#0b1830 0%,var(--bg) 60%)}
+#stage{width:1920px;height:1080px;position:relative;transform-origin:center center;flex:none}
+.slide{position:absolute;inset:0;padding:96px 120px;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s;overflow:hidden;
+  background:radial-gradient(ellipse at 80% 0%,rgba(76,201,240,.07),transparent 55%),radial-gradient(ellipse at 0% 100%,rgba(255,209,102,.05),transparent 50%),var(--bg)}
+.slide.active{opacity:1;visibility:visible}
+/* subtle animated water lines */
+.slide::after{content:"";position:absolute;left:0;right:0;bottom:0;height:160px;pointer-events:none;opacity:.35;
+  background:repeating-linear-gradient(90deg,transparent 0 40px,rgba(76,201,240,.06) 40px 42px);mask:linear-gradient(transparent,#000)}
+.kicker{font:600 22px/1 var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--tide)}
+h1,h2{font-family:var(--serif);font-weight:400;letter-spacing:-.01em}
+h2{font-size:92px;line-height:1.02;margin-top:22px}
+h2 em{font-style:italic;color:var(--beacon)}
+.lede{font-size:30px;line-height:1.45;color:var(--mute);max-width:1300px;margin-top:22px}
+.src{position:absolute;left:120px;bottom:44px;font-size:15px;color:var(--dim);letter-spacing:.02em;max-width:1500px}
+.brandmark{position:absolute;right:120px;bottom:40px;font:600 18px var(--sans);color:var(--dim);letter-spacing:.18em;text-transform:uppercase;display:flex;gap:10px;align-items:center}
+.brandmark i{width:10px;height:10px;border-radius:50%;background:var(--beacon);box-shadow:0 0 12px var(--beacon);animation:blink 2.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* reveal system */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.slide.active .rv{opacity:1;transform:none}
+.slide.active .d1{transition-delay:.12s}.slide.active .d2{transition-delay:.28s}.slide.active .d3{transition-delay:.44s}
+.slide.active .d4{transition-delay:.6s}.slide.active .d5{transition-delay:.76s}.slide.active .d6{transition-delay:.92s}
+.slide.active .d7{transition-delay:1.08s}.slide.active .d8{transition-delay:1.24s}.slide.active .d9{transition-delay:1.4s}
+
+/* waveform */
+.wave{display:flex;gap:7px;align-items:center;height:90px}
+.wave span{width:8px;border-radius:6px;background:linear-gradient(var(--beacon),var(--tide));height:20%;animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.wave span{transform-origin:center;height:100%}
+
+/* ===== Slide 1 ===== */
+.sonar{position:absolute;right:-120px;top:50%;width:1000px;height:1000px;transform:translateY(-50%);border-radius:50%}
+.sonar .ring{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(76,201,240,.18)}
+.sonar .ring:nth-child(2){inset:120px}.sonar .ring:nth-child(3){inset:240px}.sonar .ring:nth-child(4){inset:360px}
+.sonar .cross{position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.9%,rgba(76,201,240,.15) 50%,transparent 50.1%),linear-gradient(0deg,transparent 49.9%,rgba(76,201,240,.15) 50%,transparent 50.1%)}
+.sonar .sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(76,201,240,0) 0deg,rgba(76,201,240,0) 290deg,rgba(76,201,240,.45) 358deg,rgba(255,209,102,.9) 360deg);animation:spin 4s linear infinite;mask:radial-gradient(circle,#000 0 70%,transparent 71%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sonar .ping{position:absolute;inset:440px;border-radius:50%;border:2px solid var(--beacon);animation:ping 3s ease-out infinite;opacity:0}
+.sonar .ping.p2{animation-delay:1.5s}
+@keyframes ping{0%{transform:scale(.2);opacity:.9}100%{transform:scale(4.4);opacity:0}}
+.blip{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--coral);box-shadow:0 0 18px var(--coral);animation:blipA 4s linear infinite;opacity:0}
+.blip.g{background:var(--green);box-shadow:0 0 18px var(--green)}
+@keyframes blipA{0%,8%{opacity:0}10%{opacity:1}55%{opacity:.15}100%{opacity:0}}
+.core{position:absolute;inset:470px;border-radius:50%;background:var(--beacon);box-shadow:0 0 40px var(--beacon),0 0 120px rgba(255,209,102,.5)}
+.title-wrap{position:relative;z-index:2;margin-top:70px}
+.logo{display:flex;align-items:center;gap:18px;font:800 40px var(--sans);letter-spacing:.04em}
+.logo svg{width:54px;height:54px}
+.hook{font-family:var(--serif);font-size:200px;line-height:.95;margin-top:70px;letter-spacing:-.02em}
+.hook em{color:var(--beacon);font-style:italic}
+.tag{font-size:38px;line-height:1.35;color:var(--ink);max-width:980px;margin-top:40px}
+.tag b{color:var(--tide);font-weight:600}
+.event{margin-top:56px;font-size:21px;color:var(--mute);letter-spacing:.06em;display:flex;gap:28px;align-items:center}
+.event .dot{width:6px;height:6px;border-radius:50%;background:var(--dim)}
+
+/* ===== Slide 2 ===== */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:70px}
+.stat{background:linear-gradient(180deg,var(--panel),rgba(13,23,38,.4));border:1px solid var(--line);border-radius:28px;padding:44px 44px 40px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;left:0;top:0;height:4px;width:0;background:var(--c,var(--beacon));transition:width 1.4s ease .4s}
+.slide.active .stat::before{width:100%}
+.stat .num{font:700 128px/1 var(--sans);letter-spacing:-.04em;color:var(--c,var(--beacon))}
+.stat .num small{font-size:64px}
+.stat .lbl{font-size:28px;line-height:1.35;margin-top:18px;color:var(--ink)}
+.stat .sub{font-size:20px;color:var(--mute);margin-top:12px}
+.banner{margin-top:44px;display:flex;align-items:center;gap:22px;font-size:28px;padding:26px 36px;border-radius:20px;border:1px solid rgba(255,93,115,.35);background:rgba(255,93,115,.07)}
+.banner b{color:var(--coral)}
+.siren{width:16px;height:16px;border-radius:50%;background:var(--coral);animation:blink 1s infinite;box-shadow:0 0 20px var(--coral)}
+
+/* ===== Slide 3 ===== */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:64px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:44px;position:relative}
+.card h3{font:600 40px var(--sans);display:flex;align-items:center;gap:16px}
+.card h3 .x{font:700 26px var(--sans);color:var(--coral);border:2px solid var(--coral);border-radius:10px;padding:2px 12px}
+.card ul{list-style:none;margin-top:28px}
+.card li{font-size:27px;line-height:1.4;color:var(--mute);padding:14px 0;border-top:1px solid var(--line);position:relative}
+.card li b{color:var(--ink);font-weight:600}
+.strike{position:relative;display:inline-block}
+.strike::after{content:"";position:absolute;left:-4px;right:-4px;top:54%;height:5px;background:var(--coral);transform:scaleX(0);transform-origin:left;transition:transform .6s ease 1.4s;border-radius:4px}
+.slide.active .strike::after{transform:scaleX(1)}
+.ftc{margin-top:30px;padding:26px 30px;border-radius:18px;background:rgba(255,93,115,.08);border:1px solid rgba(255,93,115,.4);font-size:25px;line-height:1.4}
+.ftc .amt{font:800 54px var(--sans);color:var(--coral);display:block;margin-bottom:6px}
+.inc{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+.inc span{font-size:21px;padding:8px 18px;border-radius:999px;border:1px solid var(--line);color:var(--mute)}
+.gap{margin-top:40px;font-family:var(--serif);font-size:48px;line-height:1.2}
+.gap em{color:var(--beacon)}
+
+/* ===== Slide 4 ===== */
+.fleet{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:52px}
+.persona{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:30px 32px;position:relative;overflow:hidden}
+.persona .ic{width:60px;height:60px;border-radius:16px;display:grid;place-items:center;font-size:30px;background:rgba(76,201,240,.1);color:var(--tide);margin-bottom:18px;font-weight:700}
+.persona h4{font:600 29px var(--sans)}
+.persona p{font-size:21px;line-height:1.4;color:var(--mute);margin-top:10px}
+.persona .scan{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--tide),transparent);animation:scanY 3.2s linear infinite;opacity:.6}
+@keyframes scanY{0%{top:0}100%{top:100%}}
+.blind{margin-top:26px;border-radius:26px;padding:30px 40px;display:flex;align-items:center;gap:36px;border:1.5px solid rgba(255,209,102,.6);background:linear-gradient(90deg,rgba(255,209,102,.12),rgba(255,209,102,.02));box-shadow:0 0 60px rgba(255,209,102,.12)}
+.blind .t{font:700 34px var(--sans);color:var(--beacon);white-space:nowrap}
+.blind p{font-size:24px;line-height:1.4;color:var(--ink)}
+
+/* ===== Slide 5 ===== */
+.demo{display:grid;grid-template-columns:1.25fr .75fr;gap:44px;margin-top:40px;height:720px}
+.term{background:#060b14;border:1px solid var(--line);border-radius:24px;padding:0;overflow:hidden;display:flex;flex-direction:column}
+.term .bar{display:flex;gap:10px;align-items:center;padding:18px 24px;border-bottom:1px solid var(--line);font:500 18px var(--mono);color:var(--dim)}
+.term .bar i{width:13px;height:13px;border-radius:50%;background:#2a3850}
+.term .bar .live{margin-left:auto;color:var(--coral);display:flex;gap:8px;align-items:center}
+.term .bar .live::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--coral);animation:blink 1s infinite}
+#tx{padding:24px 30px;font:400 23px/1.62 var(--mono);color:var(--ink);flex:1;white-space:pre-wrap}
+#tx .l{min-height:1.62em}
+#tx .sr{color:var(--tide)} #tx .ag{color:var(--beacon)} #tx .bad{color:var(--coral)} #tx .ok{color:var(--green)} #tx .sys{color:var(--dim)} #tx .fx{color:#c9b6ff}
+.caret{display:inline-block;width:12px;height:24px;background:var(--beacon);vertical-align:-4px;animation:blink .8s steps(1) infinite}
+.side{display:flex;flex-direction:column;gap:24px}
+.dialbox{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;align-items:center}
+.dial{position:relative;width:330px;height:330px}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.dial .val b{font:800 110px/1 var(--sans);letter-spacing:-.04em;transition:color .4s}
+.dial .val span{font-size:20px;color:var(--mute);margin-top:6px;letter-spacing:.1em;text-transform:uppercase}
+.steps{display:flex;flex-direction:column;gap:12px}
+.step{display:flex;align-items:center;gap:16px;font-size:23px;padding:14px 20px;border-radius:14px;border:1px solid var(--line);color:var(--dim);transition:all .4s}
+.step i{width:14px;height:14px;border-radius:50%;background:var(--line);flex:none;transition:all .4s}
+.step.on{color:var(--ink);border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,transparent)}
+.step.on i{background:var(--c);box-shadow:0 0 14px var(--c)}
+
+/* ===== Slide 6 ===== */
+.flow{position:relative;margin-top:40px;height:700px}
+.flow svg.links{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.flow path{fill:none;stroke:var(--tide);stroke-width:3;stroke-dasharray:10 12;opacity:0;transition:opacity .5s}
+.slide.active .flow path{opacity:.75;animation:dash 1.2s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-44}}
+.flow path.y{stroke:var(--beacon)} .flow path.g{stroke:var(--green)} .flow path.c{stroke:var(--coral)}
+.node{position:absolute;width:300px;padding:22px 24px;border-radius:20px;background:var(--panel);border:1.5px solid var(--line);opacity:0;transform:scale(.85);transition:all .55s cubic-bezier(.2,.8,.2,1.2)}
+.slide.active .node{opacity:1;transform:none}
+.node .k{font:600 15px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--c,var(--tide))}
+.node .n{font:600 26px var(--sans);margin-top:8px;line-height:1.2}
+.node .s{font-size:17px;color:var(--mute);margin-top:6px;line-height:1.35}
+.node.hl{border-color:var(--c)}
+.packet{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--beacon);box-shadow:0 0 16px var(--beacon);offset-rotate:0deg;opacity:0}
+.slide.active .packet{opacity:1;animation:travel 6s linear infinite}
+@keyframes travel{from{offset-distance:0%}to{offset-distance:100%}}
+
+/* ===== Slide 7 ===== */
+.sponsors{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;margin-top:60px}
+.sp{background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:42px;position:relative;overflow:hidden}
+.sp .name{font:800 40px var(--sans);color:var(--c)}
+.sp .role{font-family:var(--serif);font-size:34px;font-style:italic;margin-top:10px;line-height:1.2}
+.sp ul{list-style:none;margin-top:28px}
+.sp li{font-size:23px;line-height:1.4;color:var(--mute);padding:12px 0 12px 30px;border-top:1px solid var(--line);position:relative}
+.sp li::before{content:"";position:absolute;left:2px;top:23px;width:12px;height:12px;border-radius:3px;background:var(--c)}
+.sp .glow{position:absolute;right:-80px;top:-80px;width:240px;height:240px;border-radius:50%;background:var(--c);opacity:.09;filter:blur(20px);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.25);opacity:.16}}
+.thanks{margin-top:34px;font-size:24px;color:var(--mute)}
+.thanks b{color:var(--ink)}
+
+/* ===== Slide 8 ===== */
+.mkt{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:50px}
+.big{font:800 150px/1 var(--sans);letter-spacing:-.05em;color:var(--green)}
+.big small{font-size:70px}
+.price{font-size:30px;margin-top:12px;color:var(--ink)}
+.price b{color:var(--beacon)}
+.path{display:flex;gap:14px;align-items:center;margin-top:34px;font-size:24px;color:var(--mute)}
+.path .pill{padding:12px 22px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.path .arr{color:var(--tide);font-size:28px}
+.list{list-style:none;margin-top:30px}
+.list li{font-size:25px;line-height:1.4;padding:16px 0;border-top:1px solid var(--line);color:var(--mute)}
+.list li b{color:var(--ink)}
+.now{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+.now div{padding:22px 24px;border-radius:18px;background:var(--panel);border:1px solid var(--line);font-size:23px;line-height:1.35}
+.now div b{display:block;font-size:28px;color:var(--beacon);margin-bottom:4px}
+.h3{font:600 22px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--tide);margin-top:6px}
+
+/* ===== Slide 9 ===== */
+.moat{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;margin-top:50px}
+.mitem{display:flex;gap:22px;padding:24px 0;border-top:1px solid var(--line)}
+.mitem .n{font:800 44px var(--sans);color:var(--beacon);width:60px;flex:none}
+.mitem h4{font:600 30px var(--sans)}
+.mitem p{font-size:22px;color:var(--mute);margin-top:6px;line-height:1.4}
+.chart{background:var(--panel);border:1px solid var(--line);border-radius:28px;padding:40px 44px}
+.chart h4{font:600 26px var(--sans)} .chart .cap{font-size:19px;color:var(--mute);margin-top:6px}
+.bar{margin-top:34px}
+.bar .lab{display:flex;justify-content:space-between;font-size:23px;margin-bottom:12px}
+.bar .lab b{font:800 32px var(--sans);color:var(--c)}
+.bar .track{height:38px;border-radius:10px;background:#0a1322;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;width:0;border-radius:10px;background:linear-gradient(90deg,color-mix(in srgb,var(--c) 55%,transparent),var(--c));transition:width 1.6s cubic-bezier(.2,.8,.2,1)}
+.mini{display:flex;align-items:flex-end;gap:10px;height:120px;margin-top:34px;padding-top:10px;border-top:1px solid var(--line)}
+.mini div{flex:1;background:#1b2a40;border-radius:6px 6px 0 0;height:0;transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
+.mini div.me{background:var(--beacon);box-shadow:0 0 20px rgba(255,209,102,.5)}
+.mini-cap{font-size:17px;color:var(--dim);margin-top:10px}
+
+/* ===== Slide 10 ===== */
+.close{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative;z-index:2}
+.close h1{font-size:170px;line-height:1;letter-spacing:-.02em}
+.close h1 em{color:var(--beacon)}
+.asks{display:flex;gap:24px;margin-top:60px}
+.asks div{padding:24px 30px;border-radius:20px;border:1px solid var(--line);background:rgba(13,23,38,.8);font-size:24px;line-height:1.35;max-width:440px}
+.asks div b{display:block;color:var(--tide);font-size:19px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.gh{margin-top:56px;font:500 34px var(--mono);color:var(--ink);display:flex;align-items:center;gap:18px}
+.gh span{color:var(--beacon)}
+
+/* chrome */
+#progress{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--tide),var(--beacon));width:0;transition:width .5s ease;z-index:10;box-shadow:0 0 12px rgba(255,209,102,.6)}
+#counter{position:fixed;right:22px;bottom:16px;font:500 14px var(--mono);color:var(--dim);z-index:10;letter-spacing:.1em}
+#hint{position:fixed;left:22px;bottom:16px;font:400 13px var(--sans);color:var(--dim);z-index:10;opacity:.8;transition:opacity 1s}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div id="viewport"><div id="stage">
+
+<!-- ================= SLIDE 1: TITLE / HOOK ================= -->
+<!-- SPEAKER NOTES (0:00-0:20): "Close your eyes. Seriously, everyone, close them for five seconds. Now imagine you are trying to buy a raincoat, and all you hear is: button... button... image... unlabeled image. That is the internet for 1.3 billion people. We built Foghorn so you can hear your website the way a blind customer does, and then fix it." Pause. Let the sonar run. -->
+<section class="slide" data-i="0">
+  <div class="sonar" aria-hidden="true">
+    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+    <div class="cross"></div><div class="sweep"></div>
+    <div class="ping"></div><div class="ping p2"></div>
+    <div class="blip" style="left:260px;top:300px;animation-delay:.6s"></div>
+    <div class="blip" style="left:700px;top:260px;animation-delay:1.1s"></div>
+    <div class="blip g" style="left:640px;top:720px;animation-delay:2.4s"></div>
+    <div class="blip" style="left:230px;top:640px;animation-delay:3.1s"></div>
+    <div class="core"></div>
+  </div>
+  <div class="title-wrap">
+    <div class="logo rv d1">
+      <svg viewBox="0 0 54 54" aria-hidden="true"><path d="M10 34 L32 22 L32 46 Z" fill="#ffd166"/><path d="M36 18 Q46 34 36 50" stroke="#4cc9f0" stroke-width="3" fill="none"/><path d="M41 12 Q55 34 41 56" stroke="#4cc9f0" stroke-width="3" fill="none" opacity=".5"/></svg>
+      FOGHORN
+    </div>
+    <div class="hook rv d2">Close your <em>eyes.</em></div>
+    <div class="tag rv d3">Hear your website the way a <b>blind customer</b> does, then fix it.</div>
+    <div class="wave rv d4" id="wave1" style="margin-top:44px"></div>
+    <div class="event rv d5">BOAT HACKATHON<i class="dot"></i>HISTORIC KLAMATH<i class="dot"></i>PIER 9, SAN FRANCISCO</div>
+  </div>
+</section>
+
+<!-- ================= SLIDE 2: PROBLEM ================= -->
+<!-- SPEAKER NOTES (0:20-0:40): "1.3 billion people, one in six, live with a significant disability. 94.8% of the top million home pages fail WCAG in ways a machine can detect. And it is no longer optional: the European Accessibility Act has been enforced since June 28, 2025, and US companies face over 4,000 digital accessibility lawsuits a year. This is a customer problem and a legal problem at the same time." -->
+<section class="slide" data-i="1">
+  <div class="kicker rv">The problem</div>
+  <h2 class="rv d1">The web is <em>silent</em> for 1 in 6 people.</h2>
+  <div class="stats">
+    <div class="stat rv d2" style="--c:var(--beacon)">
+      <div class="num"><span data-count="1.3" data-dec="1">0</span><small>B</small></div>
+      <div class="lbl">people live with a significant disability</div>
+      <div class="sub">about 1 in 6 of everyone on Earth</div>
+    </div>
+    <div class="stat rv d3" style="--c:var(--coral)">
+      <div class="num"><span data-count="94.8" data-dec="1">0</span><small>%</small></div>
+      <div class="lbl">of the top 1M home pages have detectable WCAG failures</div>
+      <div class="sub">and that is only what a linter can see</div>
+    </div>
+    <div class="stat rv d4" style="--c:var(--tide)">
+      <div class="num"><span data-count="4000" data-sep="1">0</span><small>+</small></div>
+      <div class="lbl">US digital accessibility lawsuits every year</div>
+      <div class="sub">e-commerce is the #1 target</div>
+    </div>
+  </div>
+  <div class="banner rv d6"><i class="siren"></i><span><b>European Accessibility Act</b> enforced since <b>June 28, 2025</b>. Selling into the EU now means being accessible.</span></div>
+  <div class="src">Sources: WHO, Global report on health equity for persons with disabilities (2023) · WebAIM Million (2025) · UsableNet annual digital accessibility lawsuit reports · Directive (EU) 2019/882</div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 3: WHY TODAY'S TOOLS FAIL ================= -->
+<!-- SPEAKER NOTES (0:40-1:00): "Today you get two options. Linters and manual audits from Deque, Level Access, Siteimprove, UsableNet: they read your HTML, but nobody actually tries to use your site. Or overlays: a JavaScript widget that promises one-line compliance. In January 2025 the FTC ordered accessiBe to pay one million dollars over misleading claims. Overlays are discredited. Nobody is testing the experience itself." -->
+<section class="slide" data-i="2">
+  <div class="kicker rv">Why today's tools fail</div>
+  <h2 class="rv d1">Linters read code. <em>Nobody listens.</em></h2>
+  <div class="vs">
+    <div class="card rv d2">
+      <h3>Static linters &amp; manual audits <span class="x">BLIND SPOT</span></h3>
+      <ul>
+        <li><b>Rule checks, not real use.</b> No one tries to buy the raincoat.</li>
+        <li><b>Miss the journey:</b> keyboard traps, focus loss, broken flows.</li>
+        <li><b>Manual audits</b> take weeks and are stale by the next deploy.</li>
+      </ul>
+      <div class="inc"><span>Deque</span><span>Level Access</span><span>Siteimprove</span><span>UsableNet</span></div>
+    </div>
+    <div class="card rv d3">
+      <h3><span class="strike">Overlays</span> <span class="x">DISCREDITED</span></h3>
+      <ul>
+        <li><b>A widget on top</b> of broken code. The source stays broken.</li>
+        <li><b>Often blocks</b> real screen-reader users.</li>
+      </ul>
+      <div class="ftc"><span class="amt">$<span data-count="1">0</span>M</span>The FTC ordered overlay vendor accessiBe to pay $1M over misleading claims (January 2025).</div>
+    </div>
+  </div>
+  <div class="gap rv d5">The gap: test the <em>experience</em>, fix the <em>source</em>, prove it.</div>
+  <div class="src">Source: U.S. Federal Trade Commission, accessiBe order (January 2025)</div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 4: PERSONA FLEET ================= -->
+<!-- SPEAKER NOTES (1:00-1:20): "Foghorn sends a fleet of AI persona agents into a real browser. A WCAG auditor running axe-core against 2.2 AA. A screen-reader user that linearizes the accessibility tree and literally speaks it. A keyboard-only user that tabs through every control. Low vision and color-blind simulations. A motor persona checking touch targets. A cognitive-load persona measuring reading grade. And the jaw-drop: a blind agent that only perceives the page through the screen reader, and tries to complete a real task." -->
+<section class="slide" data-i="3">
+  <div class="kicker rv">Foghorn</div>
+  <h2 class="rv d1">A fleet of <em>persona agents</em> in a real browser.</h2>
+  <div class="fleet">
+    <div class="persona rv d2"><div class="scan"></div><div class="ic">AA</div><h4>WCAG auditor</h4><p>axe-core against WCAG 2.2 AA on every page in the crawl.</p></div>
+    <div class="persona rv d3"><div class="scan" style="animation-delay:.5s"></div><div class="ic">))</div><h4>Screen-reader user</h4><p>Linearizes the accessibility tree and speaks it: "button… button… unlabeled image".</p></div>
+    <div class="persona rv d4"><div class="scan" style="animation-delay:1s"></div><div class="ic">Tab</div><h4>Keyboard-only user</h4><p>Tabs through every control. Catches keyboard traps and missing focus rings.</p></div>
+    <div class="persona rv d5"><div class="scan" style="animation-delay:1.5s"></div><div class="ic">◐</div><h4>Low-vision / color-blind</h4><p>Contrast math plus deuteranopia, protanopia, tritanopia and blur simulations.</p></div>
+    <div class="persona rv d6"><div class="scan" style="animation-delay:2s"></div><div class="ic">24</div><h4>Motor user</h4><p>Flags touch targets under 24px (WCAG 2.5.8 Target Size).</p></div>
+    <div class="persona rv d7"><div class="scan" style="animation-delay:2.5s"></div><div class="ic">Aa</div><h4>Cognitive load</h4><p>Flesch-Kincaid reading grade on copy, forms and errors.</p></div>
+  </div>
+  <div class="blind rv d8">
+    <div class="t">+ The blind agent</div>
+    <p>An AI that perceives the page <b>only</b> through screen-reader output, attempts a real task, narrates aloud, and tells you exactly where it got stuck.</p>
+    <div class="wave" id="wave2" style="height:60px;flex:none"></div>
+  </div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 5: LIVE DEMO MOMENT ================= -->
+<!-- SPEAKER NOTES (1:20-1:50): "Here is the Driftwood demo store. The blind agent's task: buy the yellow raincoat and check out. Listen to what it hears. [let transcript type] It fails: 'Add to cart' is plain text, not a button. Foghorn generates source-level fixes: real WCAG contrast math, alt text, accessible names, a keyboard-trap release. A human approves. Foghorn re-runs the audit and the blind agent in a sandbox, and this time it checks out. Score goes from 10 to 73." SWITCH TO LIVE DEMO HERE if time allows (see STORYBOARD.md). -->
+<section class="slide" data-i="4">
+  <div class="kicker rv">Live demo · Driftwood store</div>
+  <h2 class="rv d1" style="font-size:76px">"Buy the yellow raincoat and <em>check out.</em>"</h2>
+  <div class="demo">
+    <div class="term rv d2">
+      <div class="bar"><i></i><i></i><i></i><span style="margin-left:14px">blind-agent · boat.dev VM #07</span><span class="live">SPEAKING</span></div>
+      <div id="tx"></div>
+    </div>
+    <div class="side rv d3">
+      <div class="dialbox">
+        <div class="dial">
+          <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="86" stroke="#13203a" stroke-width="16" fill="none"/>
+            <circle id="dialArc" cx="100" cy="100" r="86" stroke="#ff5d73" stroke-width="16" fill="none" stroke-linecap="round" stroke-dasharray="540.35" stroke-dashoffset="540.35" style="transition:stroke .4s"/></svg>
+          <div class="val"><b id="dialNum" style="color:var(--coral)">0</b><span>Access score / 100</span></div>
+        </div>
+      </div>
+      <div class="steps">
+        <div class="step" data-s="0" style="--c:var(--coral)"><i></i>Blind agent fails checkout</div>
+        <div class="step" data-s="1" style="--c:#c9b6ff"><i></i>Source-level fixes generated</div>
+        <div class="step" data-s="2" style="--c:var(--beacon)"><i></i>Human approves</div>
+        <div class="step" data-s="3" style="--c:var(--green)"><i></i>Verified in sandbox · checkout complete</div>
+      </div>
+    </div>
+  </div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 6: HOW IT WORKS ================= -->
+<!-- SPEAKER NOTES (1:50-2:10): "Under the hood: you paste a URL. Context.dev maps the site. Each audit gets its own boat.dev cloud VM with a live desktop, and in fleet mode we run them in parallel. The personas drive a real browser. NY Token Exchange runs the blind agent's brain and the fix generation. A human approves, we verify in a sandbox, and every action lands in a SHA-256 hash-chained evidence trail. Context.dev monitors re-audit on every deploy so regressions get caught. We never ship an overlay." -->
+<section class="slide" data-i="5">
+  <div class="kicker rv">How it works</div>
+  <h2 class="rv d1" style="font-size:80px">From URL to <em>verified fix</em>, with receipts.</h2>
+  <div class="flow" id="flow">
+    <svg class="links" viewBox="0 0 1680 700" preserveAspectRatio="none">
+      <path id="p1" d="M300 110 L400 110"/>
+      <path d="M700 110 L800 110"/>
+      <path class="y" d="M1100 110 L1200 110"/>
+      <path class="y" d="M1350 175 C1350 260 1350 270 1350 330"/>
+      <path class="y" d="M1200 395 L1100 395"/>
+      <path class="g" d="M800 395 L700 395"/>
+      <path class="g" d="M400 395 L300 395"/>
+      <path class="g" d="M150 460 C150 540 150 560 150 590"/>
+      <path class="c" d="M300 615 C700 640 1000 640 1350 470"/>
+    </svg>
+    <div class="packet" style="offset-path:path('M150 110 L1350 110 L1350 395 L150 395 L150 625');left:0;top:0"></div>
+    <div class="node d1" style="left:0;top:45px;--c:var(--ink)"><div class="k">Input</div><div class="n">Any website URL</div><div class="s">Context.dev maps and crawls the site</div></div>
+    <div class="node hl d2" style="left:400px;top:45px;--c:var(--tide)"><div class="k">boat.dev</div><div class="n">Isolated cloud VM</div><div class="s">Live desktop per audit · fleet mode in parallel</div></div>
+    <div class="node d3" style="left:800px;top:45px;--c:var(--tide)"><div class="k">Persona fleet</div><div class="n">6 personas + blind agent</div><div class="s">Real browser, real keyboard, real speech</div></div>
+    <div class="node hl d4" style="left:1200px;top:45px;--c:var(--beacon)"><div class="k">NY Token Exchange</div><div class="n">Agent brain + AI fixes</div><div class="s">One OpenAI-compatible API · ZDR</div></div>
+    <div class="node d5" style="left:1200px;top:330px;--c:var(--beacon)"><div class="k">Fixes</div><div class="n">Source-level patches</div><div class="s">Contrast math · alt text · names · trap release</div></div>
+    <div class="node d6" style="left:800px;top:330px;--c:var(--beacon)"><div class="k">Human</div><div class="n">Approve</div><div class="s">No auto-merge, never an overlay</div></div>
+    <div class="node d7" style="left:400px;top:330px;--c:var(--green)"><div class="k">Verify</div><div class="n">Re-audit + blind agent</div><div class="s">Sandbox re-run must pass the task</div></div>
+    <div class="node hl d8" style="left:0;top:330px;--c:var(--green)"><div class="k">Evidence</div><div class="n">SHA-256 hash chain</div><div class="s">Exportable for legal counsel</div></div>
+    <div class="node hl d9" style="left:0;top:560px;width:300px;--c:var(--coral)"><div class="k">Context.dev monitor</div><div class="n">Re-audit every deploy</div><div class="s">Webhooks catch regressions</div></div>
+  </div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 7: SPONSOR STACK ================= -->
+<!-- SPEAKER NOTES (2:10-2:25): "Every sponsor is load-bearing. boat.dev gives each audit an isolated VM with a live desktop you can watch, and fleet mode for parallel audits. Context.dev is our map and our memory: crawl, page context, semantic change monitors and webhooks. NY Token Exchange is the brain: one OpenAI-compatible API, a zero-data-retention privacy floor, and we show the cost of every call." -->
+<section class="slide" data-i="6">
+  <div class="kicker rv">Sponsor stack</div>
+  <h2 class="rv d1">Every sponsor is <em>load-bearing.</em></h2>
+  <div class="sponsors">
+    <div class="sp rv d2" style="--c:var(--tide)"><div class="glow"></div>
+      <div class="name">boat.dev</div><div class="role">The body: where the agents live</div>
+      <ul><li>Isolated cloud VM per audit</li><li>Live desktop you can watch in the demo</li><li>Fleet mode: parallel VMs across pages and personas</li><li>Sandbox for fix verification</li></ul></div>
+    <div class="sp rv d3" style="--c:var(--green)"><div class="glow" style="animation-delay:1s"></div>
+      <div class="name">Context.dev</div><div class="role">The map and the memory</div>
+      <ul><li>Site mapping and crawl</li><li>Page context for every persona</li><li>Semantic change monitors</li><li>Webhooks re-audit on every deploy</li></ul></div>
+    <div class="sp rv d4" style="--c:var(--beacon)"><div class="glow" style="animation-delay:2s"></div>
+      <div class="name">NY Token Exchange</div><div class="role">The brain</div>
+      <ul><li>Runs the blind agent's reasoning</li><li>Generates the AI fixes</li><li>One OpenAI-compatible API</li><li>Zero-data-retention floor · per-call cost shown</li></ul></div>
+  </div>
+  <div class="thanks rv d6">Built aboard the Historic Klamath with thanks to <b>boat.dev</b>, <b>Context.dev</b>, <b>NY Token Exchange</b> and <b>Teamily</b>.</div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 8: MARKET & BUSINESS MODEL ================= -->
+<!-- SPEAKER NOTES (2:25-2:40): "Our buyer is the general counsel and compliance team at e-commerce and SaaS companies, then governments under the ADA Title II web rule. We charge $500 to $2,000 per site per month for monitoring, fixes and evidence. About 100 customers gets us to roughly a million in ARR, and we expand through agencies with white-label and as a CI/CD gate. Why now: the EAA, the lawsuit wave, overlays discredited, and computer-use agents on cheap VMs finally make this possible." -->
+<section class="slide" data-i="7">
+  <div class="kicker rv">Market &amp; business model</div>
+  <h2 class="rv d1">Compliance teams <em>already have budget.</em></h2>
+  <div class="mkt">
+    <div>
+      <div class="rv d2"><div class="big">$<span data-count="1">0</span><small>M ARR</small></div>
+      <div class="price">≈ <b><span data-count="100">0</span> customers</b> × <b>$500–2,000</b> per site / month</div>
+      <div style="font-size:21px;color:var(--mute);margin-top:8px">Monitoring + verified fixes + evidence trail</div></div>
+      <div class="path rv d3"><span class="pill">Direct: e-com &amp; SaaS</span><span class="arr">→</span><span class="pill">Agencies (white-label)</span><span class="arr">→</span><span class="pill">CI/CD gate</span></div>
+      <ul class="list rv d4">
+        <li><b>Buyer:</b> general counsel and compliance at e-commerce and SaaS</li>
+        <li><b>Next:</b> governments under the ADA Title II web rule</li>
+        <li><b>Litigation-risk indicator</b> on every report (risk indicator, not legal advice)</li>
+      </ul>
+    </div>
+    <div>
+      <div class="h3 rv d3">Why now</div>
+      <div class="now">
+        <div class="rv d4"><b>EAA</b>Enforced since June 28, 2025</div>
+        <div class="rv d5"><b>Lawsuit wave</b>4,000+ US suits a year</div>
+        <div class="rv d6"><b>Overlays discredited</b>FTC vs. accessiBe, Jan 2025</div>
+        <div class="rv d7"><b>Agents got cheap</b>Computer-use agents on cheap VMs</div>
+      </div>
+    </div>
+  </div>
+  <div class="src">Sources: Directive (EU) 2019/882 · UsableNet annual reports · FTC (Jan 2025) · U.S. DOJ ADA Title II web accessibility rule (2024). Pricing and ARR are planning targets.</div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 9: MOAT + VALIDATION ================= -->
+<!-- SPEAKER NOTES (2:40-2:50): "Our moat compounds: every audit adds real-browser failures mapped to fixes we verified, plus a hash-chained evidence record and distribution through CI. And before we wrote a line of code, we ran a 50-judge simulated panel of sponsor founders, VCs, a blind accessibility advocate and engineers across 26 ideas. Foghorn scored 8.6 out of 10, was number one for 33 of 50 judges, and top three for 46." -->
+<section class="slide" data-i="8">
+  <div class="kicker rv">Moat &amp; validation</div>
+  <h2 class="rv d1">Every audit makes the <em>next fix</em> smarter.</h2>
+  <div class="moat">
+    <div>
+      <div class="mitem rv d2"><div class="n">01</div><div><h4>Failure → verified-fix dataset</h4><p>Real-browser failures mapped to fixes that passed a re-run. Linters never see this data.</p></div></div>
+      <div class="mitem rv d3"><div class="n">02</div><div><h4>Hash-chained evidence</h4><p>SHA-256 chain of every agent action. Counsel can export it. Overlays cannot produce it.</p></div></div>
+      <div class="mitem rv d4"><div class="n">03</div><div><h4>CI distribution</h4><p>A gate in the deploy pipeline plus Context.dev monitors means we are there on every release.</p></div></div>
+    </div>
+    <div class="chart rv d3">
+      <h4>Pre-build validation: 50-judge simulated panel</h4>
+      <div class="cap">Sponsor founders, VCs, a blind accessibility advocate, engineers · 26 ideas scored</div>
+      <div class="bar" style="--c:var(--beacon)"><div class="lab"><span>Overall score</span><b><span data-count="8.6" data-dec="1">0</span>/10</b></div><div class="track"><div class="fill" data-w="86"></div></div></div>
+      <div class="bar" style="--c:var(--tide)"><div class="lab"><span>Ranked #1</span><b><span data-count="33">0</span>/50 judges</b></div><div class="track"><div class="fill" data-w="66"></div></div></div>
+      <div class="bar" style="--c:var(--green)"><div class="lab"><span>Ranked top-3</span><b><span data-count="46">0</span>/50 judges</b></div><div class="track"><div class="fill" data-w="92"></div></div></div>
+      <div class="mini" id="mini"></div>
+      <div class="mini-cap">26 ideas, ranked by #1 votes · Foghorn highlighted</div>
+    </div>
+  </div>
+  <div class="src">Validation is a simulated judging panel run before building, not customer traction.</div>
+  <div class="brandmark"><i></i>Foghorn</div>
+</section>
+
+<!-- ================= SLIDE 10: CLOSE ================= -->
+<!-- SPEAKER NOTES (2:50-3:00): "Overlays paint over the problem. Linters describe it. Foghorn listens, fixes the source, and proves it. We are looking for design partners: e-commerce teams and agencies who want to hear their site the way a blind customer does. Every website should be heard. Thank you." -->
+<section class="slide" data-i="9">
+  <div class="sonar" aria-hidden="true" style="opacity:.6">
+    <div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="ring"></div>
+    <div class="cross"></div><div class="sweep"></div><div class="ping"></div><div class="ping p2"></div>
+    <div class="blip g" style="left:300px;top:280px;animation-delay:.8s"></div>
+    <div class="blip g" style="left:680px;top:700px;animation-delay:2.2s"></div>
+    <div class="core"></div>
+  </div>
+  <div class="close">
+    <div class="kicker rv">The ask</div>
+    <h1 class="rv d1" style="margin-top:30px">Every website<br>should be <em>heard.</em></h1>
+    <div class="wave rv d2" id="wave3" style="margin-top:40px"></div>
+    <div class="asks">
+      <div class="rv d3"><b>Design partners</b>E-commerce and SaaS teams who need EAA and ADA evidence</div>
+      <div class="rv d4"><b>Agencies</b>Pilot white-label audits across your client sites</div>
+      <div class="rv d5"><b>Feedback</b>Blind and low-vision testers to tune the personas</div>
+    </div>
+    <div class="gh rv d6"><svg width="40" height="40" viewBox="0 0 16 16" fill="#eef3fb" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>github.com/<span>vnmoorthy/foghorn</span></div>
+  </div>
+  <div class="brandmark"><i></i>Foghorn · Boat Hackathon</div>
+</section>
+
+</div></div>
+<div id="counter">01 / 10</div>
+<div id="hint">← → / Space / click to navigate · F fullscreen</div>
+
+<script>
+(function(){
+  const slides=[...document.querySelectorAll('.slide')];
+  const N=slides.length; let cur=0; const timers=[];
+  const stage=document.getElementById('stage');
+  function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);stage.style.transform='scale('+s+')';}
+  addEventListener('resize',fit);fit();
+
+  // waveforms
+  ['wave1','wave2','wave3'].forEach((id,k)=>{const w=document.getElementById(id);if(!w)return;const n=id==='wave2'?22:48;
+    for(let i=0;i<n;i++){const b=document.createElement('span');b.style.animationDelay=(-(Math.sin(i*0.7)+1)*0.6-i*0.035).toFixed(2)+'s';
+      b.style.animationDuration=(0.8+((i*37)%10)/14).toFixed(2)+'s';b.style.opacity=(0.55+((i*13)%10)/22).toFixed(2);w.appendChild(b);}});
+  // mini chart for 26 ideas
+  const mini=document.getElementById('mini');
+  const votes=[33,5,3,2,2,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  const top3=[46,25,25,17,8,6,4,4,4,2,2,2,1,1,1,1,1,0,0,0,0,0,0,0,0,0]; // real panel data: research/judge-panel-raw.txt
+  top3.forEach((v,i)=>{const d=document.createElement('div');if(i===0)d.className='me';d.dataset.h=Math.max(4,v/46*100);mini.appendChild(d);});
+
+  function clearTimers(){while(timers.length)clearTimeout(timers.pop());}
+  function later(fn,ms){timers.push(setTimeout(fn,ms));}
+
+  function countUp(el){const target=parseFloat(el.dataset.count),dec=+(el.dataset.dec||0),sep=el.dataset.sep;const dur=1600;const t0=performance.now();
+    function f(t){const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);let v=(target*e).toFixed(dec);if(sep)v=Number(v).toLocaleString('en-US');el.textContent=v;if(p<1)el._raf=requestAnimationFrame(f);}
+    el.textContent=dec?(0).toFixed(dec):'0';later(()=>requestAnimationFrame(f),450);}
+
+  function reset(s){
+    s.querySelectorAll('[data-count]').forEach(el=>{el.textContent='0';});
+    s.querySelectorAll('.fill').forEach(f=>f.style.width='0');
+    s.querySelectorAll('.mini div').forEach(d=>d.style.height='0');
+  }
+
+  // demo transcript
+  const script=[
+    ['sys','$ foghorn dive /demo/driftwood --goal "buy the yellow raincoat"'],
+    ['ag','agent> Task: buy the yellow raincoat and check out.'],
+    ['sr','sr> "link. Shop, link. Rain Gear, link. …(silence)…"'],
+    ['sr','sr> "Yellow Storm Raincoat. 189 dollars. Add to cart."'],
+    ['ag','agent> I hear "Add to cart" but it is plain text, not a button.'],
+    ['bad','FAIL  checkout blocked · 8 rules · 51 elements · score 10/100'],
+    ['fx','fix>  contrast #b8b8b8 → #767676 (1.98:1 → 4.56:1)'],
+    ['fx','fix>  alt text · 9 mouse-only controls → buttons · trap released'],
+    ['ag','human> approved 34 fixes · sandbox re-run on boat.dev'],
+    ['ok','agent> "Add to cart, button." Cart. Checkout. Place order.'],
+    ['ok','PASS  "Order placed!" · score 73/100 · evidence chain ✓'],
+  ];
+  const tx=document.getElementById('tx');
+  const arc=document.getElementById('dialArc'),dn=document.getElementById('dialNum');const C=540.35;
+  function setDial(v){arc.style.strokeDashoffset=C*(1-v/100);dn.textContent=Math.round(v);
+    const col=v<50?'#ff5d73':v<80?'#ffd166':'#2ee59d';arc.style.stroke=col;dn.style.color=col;}
+  function animDial(from,to,dur){const t0=performance.now();function f(t){const p=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-p,3);setDial(from+(to-from)*e);if(p<1&&cur===4)requestAnimationFrame(f);}requestAnimationFrame(f);}
+  function stepOn(i){document.querySelectorAll('.step').forEach(s=>{if(+s.dataset.s<=i)s.classList.add('on');});}
+  function runDemo(){
+    tx.innerHTML='';document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));setDial(0);
+    let t=700;
+    script.forEach(([cls,line],li)=>{
+      later(()=>{const d=document.createElement('div');d.className='l '+cls;tx.appendChild(d);
+        const caret=document.createElement('span');caret.className='caret';
+        let k=0;const speed=line.length>50?16:22;
+        (function type(){d.textContent=line.slice(0,k);d.appendChild(caret);k++;if(k<=line.length)later(type,speed);else later(()=>caret.remove(),250);})();
+        if(li===0)animDial(0,10,1400);
+        if(li===5)stepOn(0);
+        if(li===6)stepOn(1);
+        if(li===8)stepOn(2);
+        if(li===10){stepOn(3);animDial(10,73,1800);}
+      },t);
+      t+=line.length*(line.length>50?16:22)+520;
+    });
+  }
+
+  function enter(i){
+    const s=slides[i];reset(s);
+    s.querySelectorAll('[data-count]').forEach(countUp);
+    s.querySelectorAll('.fill').forEach((f,k)=>later(()=>f.style.width=f.dataset.w+'%',700+k*250));
+    s.querySelectorAll('.mini div').forEach((d,k)=>later(()=>d.style.height=d.dataset.h+'%',1300+k*45));
+    if(i===4)runDemo();
+  }
+
+  function go(n){
+    n=Math.max(0,Math.min(N-1,n));if(n===cur&&slides[n].classList.contains('active'))return;
+    clearTimers();
+    slides.forEach((s,k)=>s.classList.toggle('active',k===n));
+    cur=n;enter(n);
+    document.getElementById('progress').style.width=((n+1)/N*100)+'%';
+    document.getElementById('counter').textContent=String(n+1).padStart(2,'0')+' / '+String(N).padStart(2,'0');
+    if(location.hash!=='#'+(n+1))history.replaceState(null,'','#'+(n+1));
+  }
+  addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();go(cur+1);}
+    else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(cur-1);}
+    else if(e.key==='Home')go(0); else if(e.key==='End')go(N-1);
+    else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();else document.exitFullscreen();}
+    else if(e.key==='r'||e.key==='R'){const c=cur;cur=-1;go(c);}
+  });
+  addEventListener('click',e=>{if(e.target.closest('a'))return; if(e.clientX<innerWidth*0.25)go(cur-1);else go(cur+1);});
+  let tsx=null;addEventListener('touchstart',e=>{tsx=e.touches[0].clientX},{passive:true});
+  addEventListener('touchend',e=>{if(tsx==null)return;const dx=e.changedTouches[0].clientX-tsx;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1));tsx=null;});
+  setTimeout(()=>{document.getElementById('hint').style.opacity=0},6000);
+  const start=parseInt((location.hash||'#1').slice(1))-1;cur=-1;go(isNaN(start)?0:start);
+})();
+</script>
+</body>
+</html>

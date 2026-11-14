@@ -1,0 +1,6 @@
+# Release the keyboard trap
+# WCAG wcag212 · critical · selector: html > body > a
+--- before
++++ after
+- el.addEventListener('keydown', e => { if (e.key === 'Tab') e.preventDefault() })
++ // Remove the Tab interception. If this is a modal, trap only while it is open, and close on Escape.

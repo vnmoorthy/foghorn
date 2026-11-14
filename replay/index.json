@@ -1,0 +1,78 @@
+{
+ "recordedAt": "2026-11-14T23:36:27.148Z",
+ "status": {
+  "ok": true,
+  "replay": true,
+  "providers": {
+   "compute": "recorded run",
+   "web": "recorded run",
+   "llm": "recorded run"
+  },
+  "keys": {},
+  "llm": {
+   "calls": 0,
+   "costUsd": 0
+  }
+ },
+ "scans": [
+  {
+   "id": "scn_b3a83eb4e9",
+   "url": "https://vnmoorthy.github.io/foghorn/demo/driftwood.html",
+   "status": "done",
+   "createdAt": "2026-11-14T23:01:10.019Z",
+   "score": 10,
+   "grade": "F",
+   "risk": "SEVERE",
+   "title": "Home",
+   "screenshot": "/shots/scn_b3a83eb4e9/home.jpg",
+   "violations": 8,
+   "agent": "failed"
+  },
+  {
+   "id": "scn_40debecc4b",
+   "url": "https://vnmoorthy.github.io/foghorn/demo/driftwood.html",
+   "label": "Verification",
+   "status": "done",
+   "createdAt": "2026-11-14T23:10:28.915Z",
+   "score": 73,
+   "grade": "C",
+   "risk": "ELEVATED",
+   "title": "Home",
+   "screenshot": "/shots/scn_40debecc4b/home.jpg",
+   "violations": 2,
+   "verifiedFrom": "scn_b3a83eb4e9",
+   "agent": "success"
+  },
+  {
+   "id": "scn_ff0a01f9a7",
+   "url": "https://vnmoorthy.github.io/foghorn/demo/driftwood-fixed.html",
+   "status": "done",
+   "createdAt": "2026-11-14T23:12:44.097Z",
+   "score": 100,
+   "grade": "A",
+   "risk": "LOW",
+   "title": "Driftwood Outfitters | Rain gear and outdoor essentials for the Pacific coast",
+   "screenshot": "/shots/scn_ff0a01f9a7/home.jpg",
+   "violations": 0
+  },
+  {
+   "id": "scn_a1b08921d2",
+   "url": "https://example.com/",
+   "status": "done",
+   "createdAt": "2026-11-14T22:54:34.561Z",
+   "score": 73,
+   "grade": "C",
+   "risk": "ELEVATED",
+   "title": "Example Domain",
+   "screenshot": "/shots/scn_a1b08921d2/home.jpg",
+   "violations": 3
+  }
+ ],
+ "demos": {
+  "/demo/driftwood": "scn_b3a83eb4e9",
+  "/demo/driftwood-fixed": "scn_ff0a01f9a7"
+ },
+ "verify": {
+  "scn_b3a83eb4e9": "scn_40debecc4b"
+ }
+}

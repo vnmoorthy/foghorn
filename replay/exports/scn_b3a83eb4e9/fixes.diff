@@ -1,0 +1,216 @@
+# Add alt text: “Driftwood Outfitters logo”
+# WCAG wcag111 · critical · selector: .logo-img
+--- before
++++ after
+- <img src="data:image/svg+xml,%..." class="logo-img" width="183" height="40">
++ <img alt="Driftwood Outfitters logo" src="data:image/svg+xml,%..." class="logo-img" width="183" height="40">
+
+# Add alt text: “Bestseller”
+# WCAG wcag111 · critical · selector: #p-raincoat > .media > img[width="400"][height="400"]
+--- before
++++ after
+- <img src="data:image/svg+xml,%..." width="400" height="400">
++ <img alt="Bestseller" src="data:image/svg+xml,%..." width="400" height="400">
+
+# Add alt text: “Back in stock”
+# WCAG wcag111 · critical · selector: #p-boots > .media > img[width="400"][height="400"]
+--- before
++++ after
+- <img src="data:image/svg+xml,%..." width="400" height="400">
++ <img alt="Back in stock" src="data:image/svg+xml,%..." width="400" height="400">
+
+# Add alt text: “Deckhand Roll-Top Backpack”
+# WCAG wcag111 · critical · selector: #p-pack > .media > img[width="400"][height="400"]
+--- before
++++ after
+- <img src="data:image/svg+xml,%..." width="400" height="400">
++ <img alt="Deckhand Roll-Top Backpack" src="data:image/svg+xml,%..." width="400" height="400">
+
+# Name the submit button: “Subscribe”
+# WCAG wcag412 · critical · selector: .subscribe
+--- before
++++ after
+- <input type="submit" value="" class="subscribe" style="">
++ <input type="submit" value="Subscribe" class="subscribe" style="">
+
+# Contrast 1.98:1 → 4.56:1 (color #b8b8b8 → #767676)
+# WCAG wcag143 · serious · selector: #p-raincoat > .card-body > .desc
+--- before
++++ after
+- <p class="desc">Seam-sealed 3-layer shell with a storm hood, fleece-lined collar and 20,000&nbsp;mm waterproofing.</p>
++ <p style="color: #767676" class="desc">Seam-sealed 3-layer shell with a storm hood, fleece-lined collar and 20,000&nbsp;mm waterproofing.</p>
+
+# Contrast 1.98:1 → 3.06:1 (color #b8b8b8 → #939393)
+# WCAG wcag143 · serious · selector: #p-raincoat > .card-body > .card-foot > .price
+--- before
++++ after
+- <span class="price">$189</span>
++ <span style="color: #939393" class="price">$189</span>
+
+# Contrast 1.98:1 → 4.56:1 (color #b8b8b8 → #767676)
+# WCAG wcag143 · serious · selector: #p-beanie > .card-body > .desc
+--- before
++++ after
+- <p class="desc">Chunky merino-blend rib knit with a classic fisherman's turn-up and leather patch.</p>
++ <p style="color: #767676" class="desc">Chunky merino-blend rib knit with a classic fisherman's turn-up and leather patch.</p>
+
+# Contrast 1.98:1 → 3.06:1 (color #b8b8b8 → #939393)
+# WCAG wcag143 · serious · selector: #p-beanie > .card-body > .card-foot > .price
+--- before
++++ after
+- <span class="price">$38</span>
++ <span style="color: #939393" class="price">$38</span>
+
+# Contrast 1.98:1 → 4.56:1 (color #b8b8b8 → #767676)
+# WCAG wcag143 · serious · selector: #p-boots > .card-body > .desc
+--- before
++++ after
+- <p class="desc">Hand-laid natural rubber with a siped, non-slip deck sole that grips wet rock.</p>
++ <p style="color: #767676" class="desc">Hand-laid natural rubber with a siped, non-slip deck sole that grips wet rock.</p>
+
+# Contrast 1.98:1 → 3.06:1 (color #b8b8b8 → #939393)
+# WCAG wcag143 · serious · selector: #p-boots > .card-body > .card-foot > .price
+--- before
++++ after
+- <span class="price">$129</span>
++ <span style="color: #939393" class="price">$129</span>
+
+# Contrast 1.98:1 → 4.56:1 (color #b8b8b8 → #767676)
+# WCAG wcag143 · serious · selector: #p-watch > .card-body > .desc
+--- before
++++ after
+- <p class="desc">Brushed brass case, sapphire glass and a leather strap that ages along with you.</p>
++ <p style="color: #767676" class="desc">Brushed brass case, sapphire glass and a leather strap that ages along with you.</p>
+
+# Contrast 1.98:1 → 3.06:1 (color #b8b8b8 → #939393)
+# WCAG wcag143 · serious · selector: #p-watch > .card-body > .card-foot > .price
+--- before
++++ after
+- <span class="price">$245</span>
++ <span style="color: #939393" class="price">$245</span>
+
+# Contrast 1.98:1 → 4.56:1 (color #b8b8b8 → #767676)
+# WCAG wcag143 · serious · selector: #p-pack > .card-body > .desc
+--- before
++++ after
+- <p class="desc">28&nbsp;L waxed-canvas pack with a waterproof roll-top and padded laptop sleeve.</p>
++ <p style="color: #767676" class="desc">28&nbsp;L waxed-canvas pack with a waterproof roll-top and padded laptop sleeve.</p>
+
+# Contrast 1.98:1 → 3.06:1 (color #b8b8b8 → #939393)
+# WCAG wcag143 · serious · selector: #p-pack > .card-body > .card-foot > .price
+--- before
++++ after
+- <span class="price">$112</span>
++ <span style="color: #939393" class="price">$112</span>
+
+# Contrast 1.98:1 → 4.56:1 (color #b8b8b8 → #767676)
+# WCAG wcag143 · serious · selector: #p-lantern > .card-body > .desc
+--- before
++++ after
+- <p class="desc">Rechargeable 400-lumen lantern that floats if it ever goes overboard.</p>
++ <p style="color: #767676" class="desc">Rechargeable 400-lumen lantern that floats if it ever goes overboard.</p>
+
+# Contrast 1.98:1 → 3.06:1 (color #b8b8b8 → #939393)
+# WCAG wcag143 · serious · selector: #p-lantern > .card-body > .card-foot > .price
+--- before
++++ after
+- <span class="price">$64</span>
++ <span style="color: #939393" class="price">$64</span>
+
+# Give the link a name: “Describe this control”
+# WCAG wcag244, wcag412 · serious · selector: .logo
+--- before
++++ after
+- <a href="#" class="logo">
++ <a aria-label="Describe this control" href="#" class="logo">
+
+# Give the link a name: “Describe this control”
+# WCAG wcag244, wcag412 · serious · selector: .icon-link
+--- before
++++ after
+- <a href="#journal" class="icon-link"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></…
++ <a aria-label="Describe this control" href="#journal" class="icon-link"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"…
+
+# Declare the page language: lang="en"
+# WCAG wcag311 · serious · selector: html
+--- before
++++ after
+- <html>
++ <html lang="en">
+
+# Make “Search” a real button
+# WCAG wcag211, wcag412 · critical · selector: #search-icon
+--- before
++++ after
+- <div class="…" onclick="…"><svg …/></div>
++ <button type="button" aria-label="Search"><svg aria-hidden="true" …/></button>
+
+# Make “Account” a real button
+# WCAG wcag211, wcag412 · critical · selector: #account-icon
+--- before
++++ after
+- <div class="…" onclick="…"><svg …/></div>
++ <button type="button" aria-label="Account"><svg aria-hidden="true" …/></button>
+
+# Make “Shopping cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #cart-icon
+--- before
++++ after
+- <div class="…" onclick="…"><svg …/></div>
++ <button type="button" aria-label="Shopping cart"><svg aria-hidden="true" …/></button>
+
+# Make “Add to cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #p-raincoat > div:nth-of-type(2) > div > div
+--- before
++++ after
+- <div class="…" onclick="…">Add to cart</div>
++ <button type="button">Add to cart</button>
+
+# Make “Add to cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #p-beanie > div:nth-of-type(2) > div > div
+--- before
++++ after
+- <div class="…" onclick="…">Add to cart</div>
++ <button type="button">Add to cart</button>
+
+# Make “Add to cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #p-boots > div:nth-of-type(2) > div > div
+--- before
++++ after
+- <div class="…" onclick="…">Add to cart</div>
++ <button type="button">Add to cart</button>
+
+# Make “Add to cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #p-watch > div:nth-of-type(2) > div > div
+--- before
++++ after
+- <div class="…" onclick="…">Add to cart</div>
++ <button type="button">Add to cart</button>
+
+# Make “Add to cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #p-pack > div:nth-of-type(2) > div > div
+--- before
++++ after
+- <div class="…" onclick="…">Add to cart</div>
++ <button type="button">Add to cart</button>
+
+# Make “Add to cart” a real button
+# WCAG wcag211, wcag412 · critical · selector: #p-lantern > div:nth-of-type(2) > div > div
+--- before
++++ after
+- <div class="…" onclick="…">Add to cart</div>
++ <button type="button">Add to cart</button>
+
+# Release the keyboard trap
+# WCAG wcag212 · critical · selector: #chat-input
+--- before
++++ after
+- el.addEventListener('keydown', e => { if (e.key === 'Tab') e.preventDefault() })
++ // Remove the Tab interception. If this is a modal, trap only while it is open, and close on Escape.
+
+# Restore visible focus (9 controls had none)
+# WCAG wcag247 · serious · selector: *:focus
+--- before
++++ after
+- *:focus { outline: none; }
++ :focus-visible { outline: 3px solid #1a5fff; outline-offset: 2px; }
