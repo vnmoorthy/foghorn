@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800" role="img" aria-labelledby="at ad">
+  <title id="at">Foghorn architecture</title>
+  <desc id="ad">Browser UI talks to the Foghorn API over REST and SSE. The scan orchestrator launches a persona fleet in Chromium on boat.dev cloud VMs. The screen-reader transcript feeds a blind agent that calls NY Token Exchange. Findings flow to the fix engine, a human approval gate, sandbox verification, an SHA-256 evidence ledger and exports. Context.dev provides site maps and change-monitor webhooks that trigger re-audits.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#04070d"/>
+      <stop offset="1" stop-color="#0e1729"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#4cc9f0" fill-opacity="0.08"/>
+    </pattern>
+    <marker id="ac" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#4cc9f0"/>
+    </marker>
+    <marker id="ay" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#ffd166"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#ff5d73"/>
+    </marker>
+    <style>
+      .t  { font: 700 17px system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #f4f1e8; }
+      .s  { font: 400 13px system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #9fb0cc; }
+      .st { font: 700 14px system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #e6ecf7; }
+      .ss { font: 400 12px system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #8fa3c4; }
+      .m  { font: 500 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; fill: #4cc9f0; }
+      .lbl{ font: 600 11.5px system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; fill: #c9d4e8; letter-spacing: .3px; }
+      .tag{ font: 700 10.5px system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; letter-spacing: 1.4px; }
+      .box { fill: #0b1322; stroke: #4cc9f0; stroke-opacity: .55; stroke-width: 1.5; }
+      .boxy{ fill: #0b1322; stroke: #ffd166; stroke-opacity: .8; stroke-width: 1.5; }
+      .boxr{ fill: #0b1322; stroke: #ff5d73; stroke-opacity: .85; stroke-width: 1.5; }
+      .ext { fill: #0b1322; stroke: #c9d4e8; stroke-opacity: .45; stroke-width: 1.5; stroke-dasharray: 6 5; }
+      .card{ fill: #111d33; stroke: #4cc9f0; stroke-opacity: .25; stroke-width: 1; }
+      .fc  { fill: none; stroke: #4cc9f0; stroke-width: 1.8; }
+      .fy  { fill: none; stroke: #ffd166; stroke-width: 1.8; }
+      .fr  { fill: none; stroke: #ff5d73; stroke-width: 1.8; }
+      .dash{ stroke-dasharray: 5 5; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="800" fill="url(#bg)"/>
+  <rect width="1400" height="800" fill="url(#grid)"/>
+
+  <!-- title -->
+  <text x="40" y="38" font-family="Georgia, 'Times New Roman', serif" font-size="24" font-weight="700" fill="#f4f1e8">Foghorn <tspan fill="#ffd166">·</tspan> architecture</text>
+
+  <!-- ===== live desktop stream (top route) ===== -->
+  <path class="fc dash" d="M175 90 V58 H860 V70" marker-end="url(#ac)"/>
+  <rect x="402" y="48" width="236" height="20" rx="10" fill="#04070d"/>
+  <text class="lbl" x="520" y="62" text-anchor="middle">live desktop stream (boat.dev)</text>
+
+  <!-- ===== A. Browser UI ===== -->
+  <rect class="box" x="40" y="90" width="270" height="190" rx="14"/>
+  <text class="tag" x="60" y="116" fill="#4cc9f0">CLIENT</text>
+  <text class="t" x="60" y="142">Browser UI</text>
+  <text class="s" x="60" y="168">React + Vite</text>
+  <text class="s" x="60" y="190">SSE live event stream</text>
+  <text class="s" x="60" y="212">Web Speech TTS playback</text>
+  <text class="s" x="60" y="234">synced highlight · speed control</text>
+  <text class="s" x="60" y="256">focus-path + CVD overlays</text>
+
+  <!-- ===== B. Foghorn API ===== -->
+  <rect class="box" x="370" y="90" width="260" height="130" rx="14"/>
+  <text class="tag" x="390" y="116" fill="#4cc9f0">SERVER</text>
+  <text class="t" x="390" y="142">Foghorn API</text>
+  <text class="s" x="390" y="168">Node / Express · TypeScript</text>
+  <text class="s" x="390" y="190">REST + SSE · exports</text>
+  <text class="m" x="390" y="210">:8787 /api/*</text>
+
+  <!-- A <-> B -->
+  <path class="fc" d="M312 150 H368" marker-start="url(#ac)" marker-end="url(#ac)"/>
+  <text class="lbl" x="340" y="140" text-anchor="middle">REST</text>
+  <text class="lbl" x="340" y="170" text-anchor="middle">SSE</text>
+
+  <!-- ===== C. Scan Orchestrator ===== -->
+  <rect class="box" x="370" y="262" width="260" height="110" rx="14"/>
+  <text class="t" x="390" y="294">Scan Orchestrator</text>
+  <text class="s" x="390" y="320">crawl · queue · dedupe</text>
+  <text class="s" x="390" y="342">score · emit events</text>
+  <text class="m" x="390" y="362">engine/scan.ts</text>
+
+  <!-- B -> C -->
+  <path class="fc" d="M500 222 V259" marker-end="url(#ac)"/>
+
+  <!-- ===== D. boat.dev VM + persona fleet ===== -->
+  <rect class="box" x="690" y="70" width="340" height="432" rx="16" fill-opacity="0.9"/>
+  <text class="tag" x="710" y="96" fill="#4cc9f0">BOAT.DEV CLOUD VM · CHROMIUM</text>
+  <text class="t" x="710" y="122">Persona Fleet</text>
+  <text class="ss" x="842" y="122">headless · live desktop stream</text>
+
+  <g>
+    <rect class="card" x="706" y="140" width="148" height="104" rx="10"/>
+    <circle cx="724" cy="162" r="5" fill="#4cc9f0"/>
+    <text class="st" x="736" y="167">WCAG Auditor</text>
+    <text class="ss" x="720" y="192">axe-core rules</text>
+    <text class="ss" x="720" y="210">WCAG 2.2 A / AA</text>
+    <text class="ss" x="720" y="228">per-node evidence</text>
+
+    <rect class="card" x="866" y="140" width="148" height="104" rx="10"/>
+    <circle cx="884" cy="162" r="5" fill="#ffd166"/>
+    <text class="st" x="896" y="167">Screen-Reader</text>
+    <text class="ss" x="880" y="192">accessibility-tree</text>
+    <text class="ss" x="880" y="210">linearizer</text>
+    <text class="ss" x="880" y="228">→ spoken transcript</text>
+
+    <rect class="card" x="706" y="256" width="148" height="104" rx="10"/>
+    <circle cx="724" cy="278" r="5" fill="#4cc9f0"/>
+    <text class="st" x="736" y="283">Keyboard-only</text>
+    <text class="ss" x="720" y="308">Tab walk</text>
+    <text class="ss" x="720" y="326">focus visibility</text>
+    <text class="ss" x="720" y="344">trap detection</text>
+
+    <rect class="card" x="866" y="256" width="148" height="104" rx="10"/>
+    <circle cx="884" cy="278" r="5" fill="#ff5d73"/>
+    <text class="st" x="896" y="283">Low-vision</text>
+    <text class="ss" x="880" y="308">contrast ratios</text>
+    <text class="ss" x="880" y="326">color-blind (CVD)</text>
+    <text class="ss" x="880" y="344">simulations</text>
+
+    <rect class="card" x="706" y="372" width="148" height="104" rx="10"/>
+    <circle cx="724" cy="394" r="5" fill="#4cc9f0"/>
+    <text class="st" x="736" y="399">Motor</text>
+    <text class="ss" x="720" y="424">target size</text>
+    <text class="ss" x="720" y="442">(WCAG 2.5.8,</text>
+    <text class="ss" x="720" y="460">24 × 24 CSS px)</text>
+
+    <rect class="card" x="866" y="372" width="148" height="104" rx="10"/>
+    <circle cx="884" cy="394" r="5" fill="#ffd166"/>
+    <text class="st" x="896" y="399">Cognitive</text>
+    <text class="ss" x="880" y="424">reading grade</text>
+    <text class="ss" x="880" y="442">jargon · link text</text>
+    <text class="ss" x="880" y="460">clarity</text>
+  </g>
+
+  <!-- C -> D -->
+  <path class="fc" d="M632 316 H688" marker-end="url(#ac)"/>
+  <text class="lbl" x="660" y="306" text-anchor="middle">run</text>
+
+  <!-- ===== E. Blind Agent ===== -->
+  <rect class="boxy" x="1090" y="90" width="270" height="140" rx="14"/>
+  <text class="tag" x="1110" y="116" fill="#ffd166">AGENT</text>
+  <text class="t" x="1110" y="142">Blind Agent</text>
+  <text class="s" x="1110" y="168">perceives only screen-reader</text>
+  <text class="s" x="1110" y="188">output, acts by keyboard</text>
+  <text class="m" x="1110" y="214" fill="#ffd166">goal: "buy the rain jacket"</text>
+
+  <!-- D -> E -->
+  <path class="fy" d="M1032 190 H1088" marker-end="url(#ay)"/>
+  <text class="lbl" x="1060" y="180" text-anchor="middle">SR</text>
+  <text class="lbl" x="1060" y="208" text-anchor="middle">text</text>
+
+  <!-- ===== F. NY Token Exchange ===== -->
+  <rect class="ext" x="1090" y="282" width="270" height="164" rx="14"/>
+  <text class="tag" x="1110" y="308" fill="#ffd166">LLM GATEWAY</text>
+  <text class="t" x="1110" y="334">NY Token Exchange</text>
+  <text class="s" x="1110" y="360">OpenAI-compatible API</text>
+  <text class="s" x="1110" y="382">ZDR privacy floor</text>
+  <text class="s" x="1110" y="404">per-call cost metering</text>
+  <text class="m" x="1110" y="430" fill="#ffd166">model: nyte/auto</text>
+
+  <!-- E <-> F -->
+  <path class="fy" d="M1225 232 V280" marker-start="url(#ay)" marker-end="url(#ay)"/>
+
+  <!-- ===== findings -> Fix Engine ===== -->
+  <path class="fc" d="M860 504 V532 H470 V568" marker-end="url(#ac)"/>
+  <rect x="610" y="522" width="104" height="20" rx="10" fill="#04070d"/>
+  <text class="lbl" x="662" y="536" text-anchor="middle">findings</text>
+
+  <!-- NYTE -> AI fixes (dashed yellow) -->
+  <path class="fy dash" d="M1300 448 V552 H540 V568" marker-end="url(#ay)"/>
+  <rect x="1012" y="542" width="126" height="20" rx="10" fill="#04070d"/>
+  <text class="lbl" x="1075" y="556" text-anchor="middle">AI fix generation</text>
+
+  <!-- ===== Bottom pipeline ===== -->
+  <text class="tag" x="370" y="742" fill="#6f84a8">FIX → APPROVE → VERIFY → PROVE → SHIP</text>
+
+  <rect class="box" x="370" y="570" width="200" height="150" rx="14"/>
+  <text class="t" x="388" y="600">Fix Engine</text>
+  <text class="s" x="388" y="626">deterministic WCAG fixes</text>
+  <text class="s" x="388" y="648">contrast math (4.5:1)</text>
+  <text class="s" x="388" y="670">AI fixes</text>
+  <text class="m" x="388" y="704">engine/fixes.ts</text>
+
+  <rect class="boxr" x="600" y="570" width="170" height="150" rx="14"/>
+  <text class="tag" x="618" y="596" fill="#ff5d73">HUMAN GATE</text>
+  <text class="t" x="618" y="622">Approval</text>
+  <text class="s" x="618" y="648">approve one</text>
+  <text class="s" x="618" y="670">or approve all</text>
+  <text class="s" x="618" y="692">nothing ships unseen</text>
+
+  <rect class="box" x="800" y="570" width="200" height="150" rx="14"/>
+  <text class="t" x="818" y="600">Sandbox Verify</text>
+  <text class="s" x="818" y="626">re-audit with patch</text>
+  <text class="s" x="818" y="648">blind agent rerun</text>
+  <text class="s" x="818" y="670">before / after diff</text>
+  <text class="m" x="818" y="704">POST /verify</text>
+
+  <rect class="box" x="1030" y="570" width="160" height="150" rx="14"/>
+  <text class="t" x="1048" y="600">Evidence</text>
+  <text class="t" x="1048" y="622">Ledger</text>
+  <text class="s" x="1048" y="648">SHA-256</text>
+  <text class="s" x="1048" y="670">hash chain</text>
+  <text class="m" x="1048" y="704">tamper-evident</text>
+
+  <rect class="box" x="1220" y="570" width="150" height="150" rx="14"/>
+  <text class="t" x="1238" y="600">Exports</text>
+  <text class="m" x="1238" y="630">report.md</text>
+  <text class="m" x="1238" y="652">fixes.diff</text>
+  <text class="m" x="1238" y="674">patch.js</text>
+  <text class="m" x="1238" y="696">evidence.json</text>
+
+  <path class="fr" d="M572 645 H598" marker-end="url(#ar)"/>
+  <path class="fc" d="M772 645 H798" marker-end="url(#ac)"/>
+  <path class="fc" d="M1002 645 H1028" marker-end="url(#ac)"/>
+  <path class="fc" d="M1192 645 H1218" marker-end="url(#ac)"/>
+
+  <!-- ===== L. Context.dev ===== -->
+  <rect class="ext" x="40" y="540" width="270" height="180" rx="14"/>
+  <text class="tag" x="60" y="566" fill="#c9d4e8">WEB INTELLIGENCE</text>
+  <text class="t" x="60" y="592">Context.dev</text>
+  <text class="s" x="60" y="618">site map / crawl</text>
+  <text class="s" x="60" y="640">change monitors</text>
+  <text class="s" x="60" y="662">webhook → re-audit</text>
+  <text class="s" x="60" y="684">regression alerts</text>
+  <text class="m" x="60" y="708">/api/webhooks/context</text>
+
+  <!-- Context.dev <-> Orchestrator -->
+  <path class="fc dash" d="M175 538 V420 H340 V340 H368" marker-end="url(#ac)"/>
+  <path class="fc dash" d="M400 374 V470 H230 V538" marker-end="url(#ac)"/>
+  <rect x="190" y="410" width="130" height="20" rx="10" fill="#04070d"/>
+  <text class="lbl" x="255" y="424" text-anchor="middle">site map · webhook</text>
+  <rect x="244" y="460" width="134" height="20" rx="10" fill="#04070d"/>
+  <text class="lbl" x="311" y="474" text-anchor="middle">register monitors</text>
+
+  <!-- footer legend -->
+  <g transform="translate(40 762)">
+    <line x1="0" y1="-4" x2="26" y2="-4" stroke="#4cc9f0" stroke-width="2"/>
+    <text class="ss" x="34" y="0">data flow</text>
+    <line x1="110" y1="-4" x2="136" y2="-4" stroke="#ffd166" stroke-width="2"/>
+    <text class="ss" x="144" y="0">LLM / agent</text>
+    <line x1="232" y1="-4" x2="258" y2="-4" stroke="#ff5d73" stroke-width="2"/>
+    <text class="ss" x="266" y="0">human gate</text>
+  </g>
+  <text class="ss" x="1360" y="760" text-anchor="end">Every integration degrades gracefully: offline heuristics · direct fetch · local Chromium</text>
+</svg>

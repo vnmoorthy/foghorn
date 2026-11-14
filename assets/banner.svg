@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t d">
+  <title id="t">Foghorn</title>
+  <desc id="d">Foghorn banner: a lighthouse beacon sweeping sonar rings over an audio waveform. Tagline: Hear your website the way a blind customer does, then fix it.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#04070d"/>
+      <stop offset="1" stop-color="#0e1729"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="930" cy="300" r="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd166" stop-opacity="0.22"/>
+      <stop offset="0.45" stop-color="#4cc9f0" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#04070d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffd166" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffd166" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4cc9f0"/>
+      <stop offset="0.6" stop-color="#4cc9f0"/>
+      <stop offset="1" stop-color="#ff5d73"/>
+    </linearGradient>
+    <linearGradient id="tower" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1b2a47"/>
+      <stop offset="0.5" stop-color="#2c4170"/>
+      <stop offset="1" stop-color="#16223b"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" fill="none" stroke="#4cc9f0" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <clipPath id="frame"><rect width="1280" height="640" rx="0"/></clipPath>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+
+  <g clip-path="url(#frame)">
+    <rect width="1280" height="640" fill="url(#bg)"/>
+    <rect width="1280" height="640" fill="url(#grid)"/>
+    <rect width="1280" height="640" fill="url(#glow)"/>
+
+    <!-- sonar rings -->
+    <g fill="none" stroke="#4cc9f0" stroke-width="1.5">
+      <circle cx="930" cy="300" r="60" stroke-opacity="0.35"/>
+      <circle cx="930" cy="300" r="130" stroke-opacity="0.22"/>
+      <circle cx="930" cy="300" r="210" stroke-opacity="0.14" stroke-dasharray="4 8"/>
+      <circle cx="930" cy="300" r="300" stroke-opacity="0.09"/>
+      <circle cx="930" cy="300" r="60" stroke="#ffd166" stroke-width="2">
+        <animate attributeName="r" values="40;360" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-opacity" values="0.7;0" dur="4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="930" cy="300" r="60" stroke="#4cc9f0" stroke-width="2">
+        <animate attributeName="r" values="40;360" dur="4s" begin="2s" repeatCount="indefinite"/>
+        <animate attributeName="stroke-opacity" values="0.6;0" dur="4s" begin="2s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- crosshair -->
+    <g stroke="#4cc9f0" stroke-opacity="0.12" stroke-width="1">
+      <line x1="610" y1="300" x2="1260" y2="300"/>
+      <line x1="930" y1="0" x2="930" y2="640"/>
+    </g>
+
+    <!-- rotating beacon sweep -->
+    <g>
+      <path d="M930 300 L1290 210 A372 372 0 0 1 1290 390 Z" fill="url(#sweep)" opacity="0.75"/>
+      <path d="M930 300 L570 210 A372 372 0 0 0 570 390 Z" fill="#ffd166" opacity="0.08"/>
+      <animateTransform attributeName="transform" type="rotate" from="0 930 300" to="360 930 300" dur="9s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- detected "issue" blips -->
+    <g>
+      <circle cx="1080" cy="180" r="5" fill="#ff5d73">
+        <animate attributeName="opacity" values="0;1;0.2;0" dur="9s" begin="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="780" cy="420" r="4" fill="#ff5d73">
+        <animate attributeName="opacity" values="0;1;0.2;0" dur="9s" begin="5.6s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="1140" cy="400" r="4" fill="#ffd166">
+        <animate attributeName="opacity" values="0;1;0.2;0" dur="9s" begin="2.4s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="760" cy="170" r="3.5" fill="#4cc9f0">
+        <animate attributeName="opacity" values="0;1;0.2;0" dur="9s" begin="6.8s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+
+    <!-- lighthouse -->
+    <g>
+      <path d="M906 330 L954 330 L966 560 L894 560 Z" fill="url(#tower)" stroke="#4cc9f0" stroke-opacity="0.35"/>
+      <path d="M902 400 L958 400 L960 428 L900 428 Z" fill="#ff5d73" opacity="0.85"/>
+      <path d="M897 480 L963 480 L965 508 L895 508 Z" fill="#ff5d73" opacity="0.85"/>
+      <rect x="898" y="318" width="64" height="12" rx="2" fill="#2c4170" stroke="#4cc9f0" stroke-opacity="0.4"/>
+      <rect x="910" y="282" width="40" height="36" rx="3" fill="#0e1729" stroke="#ffd166" stroke-opacity="0.8"/>
+      <circle cx="930" cy="300" r="12" fill="#ffd166"/>
+      <circle cx="930" cy="300" r="22" fill="#ffd166" opacity="0.5" filter="url(#soft)">
+        <animate attributeName="opacity" values="0.35;0.8;0.35" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <path d="M904 282 L930 258 L956 282 Z" fill="#2c4170" stroke="#4cc9f0" stroke-opacity="0.4"/>
+      <line x1="930" y1="258" x2="930" y2="244" stroke="#4cc9f0" stroke-opacity="0.6" stroke-width="2"/>
+    </g>
+
+    <!-- water / waveform -->
+    <rect x="0" y="560" width="1280" height="80" fill="#04070d" opacity="0.55"/>
+    <g fill="url(#wave)">
+      <rect x="64" y="572" width="6" height="16" rx="3"><animate attributeName="height" values="16;34;12;16" dur="1.6s" repeatCount="indefinite"/></rect>
+      <rect x="80" y="566" width="6" height="28" rx="3"><animate attributeName="height" values="28;12;40;28" dur="1.4s" repeatCount="indefinite"/></rect>
+      <rect x="96" y="560" width="6" height="40" rx="3"><animate attributeName="height" values="40;20;48;40" dur="1.8s" repeatCount="indefinite"/></rect>
+      <rect x="112" y="568" width="6" height="24" rx="3"><animate attributeName="height" values="24;44;16;24" dur="1.3s" repeatCount="indefinite"/></rect>
+      <rect x="128" y="574" width="6" height="12" rx="3"><animate attributeName="height" values="12;30;8;12" dur="1.7s" repeatCount="indefinite"/></rect>
+      <rect x="144" y="562" width="6" height="36" rx="3"><animate attributeName="height" values="36;14;42;36" dur="1.5s" repeatCount="indefinite"/></rect>
+      <rect x="160" y="556" width="6" height="48" rx="3"><animate attributeName="height" values="48;22;36;48" dur="1.9s" repeatCount="indefinite"/></rect>
+      <rect x="176" y="566" width="6" height="28" rx="3"><animate attributeName="height" values="28;46;18;28" dur="1.2s" repeatCount="indefinite"/></rect>
+      <rect x="192" y="570" width="6" height="20" rx="3"><animate attributeName="height" values="20;8;32;20" dur="1.6s" repeatCount="indefinite"/></rect>
+      <rect x="208" y="560" width="6" height="40" rx="3"><animate attributeName="height" values="40;26;50;40" dur="1.4s" repeatCount="indefinite"/></rect>
+      <rect x="224" y="572" width="6" height="16" rx="3"><animate attributeName="height" values="16;38;10;16" dur="1.8s" repeatCount="indefinite"/></rect>
+      <rect x="240" y="564" width="6" height="32" rx="3"><animate attributeName="height" values="32;14;44;32" dur="1.3s" repeatCount="indefinite"/></rect>
+      <rect x="256" y="568" width="6" height="24" rx="3"><animate attributeName="height" values="24;40;12;24" dur="1.7s" repeatCount="indefinite"/></rect>
+      <rect x="272" y="574" width="6" height="12" rx="3"/>
+      <rect x="288" y="577" width="6" height="6" rx="3"/>
+      <rect x="304" y="577" width="6" height="6" rx="3"/>
+      <rect x="320" y="577" width="6" height="6" rx="3"/>
+    </g>
+    <g fill="#4cc9f0" fill-opacity="0.25">
+      <rect x="336" y="578" width="560" height="4" rx="2"/>
+    </g>
+    <path d="M0 600 Q 80 590 160 600 T 320 600 T 480 600 T 640 600 T 800 600 T 960 600 T 1120 600 T 1280 600" fill="none" stroke="#4cc9f0" stroke-opacity="0.18" stroke-width="2">
+      <animateTransform attributeName="transform" type="translate" values="0 0;-160 0;0 0" dur="12s" repeatCount="indefinite"/>
+    </path>
+    <path d="M0 618 Q 80 610 160 618 T 320 618 T 480 618 T 640 618 T 800 618 T 960 618 T 1120 618 T 1280 618 T 1440 618" fill="none" stroke="#ffd166" stroke-opacity="0.10" stroke-width="2">
+      <animateTransform attributeName="transform" type="translate" values="-160 0;0 0;-160 0" dur="14s" repeatCount="indefinite"/>
+    </path>
+
+    <!-- wordmark -->
+    <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+      <text x="72" y="112" font-size="15" letter-spacing="4" fill="#4cc9f0" font-weight="600">ACCESSIBILITY · HEARD, NOT JUST SEEN</text>
+    </g>
+    <text x="64" y="268" font-family="Georgia, 'Times New Roman', 'DejaVu Serif', serif" font-size="148" font-weight="700" fill="#f4f1e8" letter-spacing="-3">Foghorn</text>
+    <rect x="72" y="296" width="96" height="5" rx="2.5" fill="#ffd166"/>
+    <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" fill="#c9d4e8">
+      <text x="72" y="356" font-size="28" font-weight="500">Hear your website the way a blind</text>
+      <text x="72" y="394" font-size="28" font-weight="500">customer does <tspan fill="#ffd166">—</tspan> <tspan fill="#ffd166" font-weight="700">then fix it.</tspan></text>
+    </g>
+
+    <!-- screen-reader caption chip -->
+    <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+      <rect x="72" y="436" width="490" height="44" rx="10" fill="#0e1729" stroke="#4cc9f0" stroke-opacity="0.35"/>
+      <circle cx="96" cy="458" r="6" fill="#ff5d73">
+        <animate attributeName="opacity" values="1;0.3;1" dur="1.2s" repeatCount="indefinite"/>
+      </circle>
+      <text x="114" y="463" fill="#8fa3c4">SR</text>
+      <text x="146" y="463" fill="#e6ecf7">"button. button. image. link, click here."</text>
+    </g>
+
+    <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#6f84a8" letter-spacing="1">
+      <text x="72" y="528">WCAG 2.2 AA  ·  axe-core  ·  blind agent  ·  sandbox-verified fixes  ·  evidence ledger</text>
+    </g>
+  </g>
+</svg>
