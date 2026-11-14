@@ -71,7 +71,7 @@ app.get('/api/scans/:id', (req, res) => {
 
 function normalizeUrl(u: string, req: express.Request) {
   u = (u || '').trim();
-  if (u.startsWith('/demo/')) return `${req.protocol}://${req.get('host')}${u}`;
+  if (u.startsWith('/demo/')) return `http://localhost:${PORT}${u}`; // the server scans its own demo store locally (works behind boat.dev's proxy)
   if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
   return new URL(u).toString();
 }
