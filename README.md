@@ -62,6 +62,17 @@ Teams don't ignore accessibility because they don't care. They ignore it because
   <img src="assets/screenshot.png" alt="Foghorn scanning the Driftwood Outfitters demo store: persona results, screen-reader transcript and proposed fixes" width="100%" />
 </p>
 
+<table>
+<tr>
+<td width="33%"><img src="assets/screenshot-home.png" alt="Foghorn home: enter a URL and a blind-agent task" /><br/><sub><b>Dive</b>: any URL + a task for the blind agent</sub></td>
+<td width="33%"><img src="assets/screenshot-agent.png" alt="Blind agent fails: Add to cart is plain text, not a button" /><br/><sub><b>Blind agent</b>: “I hear ‘Add to cart’, but it’s plain text, not a button.”</sub></td>
+<td width="33%"><img src="assets/screenshot-fixes.png" alt="Source-level fixes with WCAG contrast math and human approval" /><br/><sub><b>Fixes</b>: source diffs, contrast math, human approval, sandbox verify</sub></td>
+</tr>
+</table>
+
+<p align="center"><b>Real results on the Driftwood demo store:</b> score <code>10/100 → 73/100</code> · keyboard trap released · 42/42 controls reachable · blind agent goes from <i>“I can't press it”</i> to <i>“Order placed!”</i>
+</p>
+
 ## How it works
 
 <p align="center">

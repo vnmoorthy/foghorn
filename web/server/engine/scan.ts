@@ -135,7 +135,7 @@ async function keyboardWalk(scan: Scan, page: Page, maxTabs = 45) {
     if (seen.has(key) && n > 5 && steps.length > 4 && steps[0].sel === key) break; // full cycle
     seen.add(key);
   }
-  return { steps, trap, trapAt, noRing, reachable: seen.size };
+  return { steps, trap, trapAt, noRing, reachable: seen.size, capped: steps.length >= maxTabs };
 }
 
 function computeScore(scan: Scan) {
@@ -147,10 +147,10 @@ function computeScore(scan: Scan) {
   breakdown.push({ label: 'WCAG violations (axe-core)', penalty: Math.min(55, axeP) });
   const silent = scan.transcript.filter((u) => u.role === 'generic-clickable').length;
   const noName = scan.transcript.filter((u) => u.issues.includes('no-name')).length;
-  breakdown.push({ label: 'Screen-reader barriers', penalty: Math.min(18, silent * 1.5 + noName * 1.2) });
+  breakdown.push({ label: 'Screen-reader barriers', penalty: Math.min(14, silent * 1.5 + noName * 1.2) });
   const kb = scan.keyboard;
   let kbP = 0;
-  if (kb) { if (kb.trap) kbP += 12; kbP += Math.min(6, kb.noRing * 0.4); if (kb.clickables) kbP += Math.max(0, 1 - kb.reachable / kb.clickables) * 8; }
+  if (kb) { if (kb.trap) kbP += 12; kbP += Math.min(6, kb.noRing * 0.4); if (kb.clickables && !(kb as any).capped) kbP += Math.max(0, 1 - kb.reachable / kb.clickables) * 8; }
   breakdown.push({ label: 'Keyboard access', penalty: Math.min(20, kbP) });
   breakdown.push({ label: 'Small touch targets', penalty: Math.min(4, (scan.targets?.smallCount || 0) * 0.3) });
   const total = breakdown.reduce((s, b) => s + b.penalty, 0);
@@ -264,10 +264,10 @@ export async function runScan(scan: Scan, opts: { patch?: string; maxPages?: num
     const kw = await keyboardWalk(scan, page);
     scan.focus = kw.steps;
     const clickables = Math.max(meta.clickables || 0, kw.reachable);
-    scan.keyboard = { reachable: kw.reachable, clickables, trap: kw.trap, trapAt: kw.trapAt, noRing: kw.noRing };
+    scan.keyboard = { reachable: kw.reachable, clickables, trap: kw.trap, trapAt: kw.trapAt, noRing: kw.noRing, capped: kw.capped } as any;
     setPersona(scan, 'kb', {
       status: 'done', tone: kw.trap ? 'bad' : kw.noRing > 3 ? 'warn' : 'good',
-      metric: kw.trap ? `TRAPPED after ${kw.steps.length} tabs` : `${kw.reachable} of ${clickables} controls reachable`,
+      metric: kw.trap ? `TRAPPED after ${kw.steps.length} tabs` : kw.capped ? `${kw.reachable}+ controls reachable` : `${kw.reachable} of ${clickables} controls reachable`,
       summary: kw.trap ? `Focus stuck in ${kw.trapAt}` : `${kw.noRing} focus stops had no visible ring`,
     });
     evidence(scan, 'persona.keyboard', { ...scan.keyboard, steps: kw.steps.length });

@@ -329,7 +329,7 @@ h2 em{font-style:italic;color:var(--beacon)}
 </section>
 
 <!-- ================= SLIDE 5: LIVE DEMO MOMENT ================= -->
-<!-- SPEAKER NOTES (1:20-1:50): "Here is the Driftwood demo store. The blind agent's task: buy the yellow raincoat and check out. Listen to what it hears. [let transcript type] It fails: 'Add to cart' is plain text, not a button. Foghorn generates source-level fixes: real WCAG contrast math, alt text, accessible names, a keyboard-trap release. A human approves. Foghorn re-runs the audit and the blind agent in a sandbox, and this time it checks out. Score goes from 27 to 96." SWITCH TO LIVE DEMO HERE if time allows (see STORYBOARD.md). -->
+<!-- SPEAKER NOTES (1:20-1:50): "Here is the Driftwood demo store. The blind agent's task: buy the yellow raincoat and check out. Listen to what it hears. [let transcript type] It fails: 'Add to cart' is plain text, not a button. Foghorn generates source-level fixes: real WCAG contrast math, alt text, accessible names, a keyboard-trap release. A human approves. Foghorn re-runs the audit and the blind agent in a sandbox, and this time it checks out. Score goes from 10 to 73." SWITCH TO LIVE DEMO HERE if time allows (see STORYBOARD.md). -->
 <section class="slide" data-i="4">
   <div class="kicker rv">Live demo · Driftwood store</div>
   <h2 class="rv d1" style="font-size:76px">"Buy the yellow raincoat and <em>check out.</em>"</h2>
@@ -507,7 +507,7 @@ h2 em{font-style:italic;color:var(--beacon)}
   // mini chart for 26 ideas
   const mini=document.getElementById('mini');
   const votes=[33,5,3,2,2,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-  const top3=[46,22,18,14,11,9,8,7,6,5,4,4,3,3,2,2,2,1,1,1,1,1,0,0,0,0];
+  const top3=[46,25,25,17,8,6,4,4,4,2,2,2,1,1,1,1,1,0,0,0,0,0,0,0,0,0]; // real panel data: research/judge-panel-raw.txt
   top3.forEach((v,i)=>{const d=document.createElement('div');if(i===0)d.className='me';d.dataset.h=Math.max(4,v/46*100);mini.appendChild(d);});
 
   function clearTimers(){while(timers.length)clearTimeout(timers.pop());}
@@ -525,17 +525,17 @@ h2 em{font-style:italic;color:var(--beacon)}
 
   // demo transcript
   const script=[
-    ['sys','$ foghorn scan https://driftwood.demo --persona blind-agent'],
+    ['sys','$ foghorn dive /demo/driftwood --goal "buy the yellow raincoat"'],
     ['ag','agent> Task: buy the yellow raincoat and check out.'],
-    ['sr','sr> "Driftwood. Link. Link. Image. Unlabeled image."'],
-    ['sr','sr> "Button. Button. Yellow raincoat, 89 dollars."'],
+    ['sr','sr> "link. Shop, link. Rain Gear, link. …(silence)…"'],
+    ['sr','sr> "Yellow Storm Raincoat. 189 dollars. Add to cart."'],
     ['ag','agent> I hear "Add to cart" but it is plain text, not a button.'],
-    ['bad','FAIL  checkout blocked · 23 issues · score 27/100'],
-    ['fx','fix>  contrast #9aa0a6 → #5f6368 (2.6:1 → 6.1:1)'],
-    ['fx','fix>  alt text ×6 · names for 4 controls · release focus trap'],
-    ['ag','human> approved 12 fixes · sandbox re-run on boat.dev'],
-    ['ok','agent> "Add to cart, button." Pressed. Checkout. Done.'],
-    ['ok','PASS  checkout complete · score 96/100 · evidence #a41f…e9'],
+    ['bad','FAIL  checkout blocked · 8 rules · 51 elements · score 10/100'],
+    ['fx','fix>  contrast #b8b8b8 → #767676 (1.98:1 → 4.56:1)'],
+    ['fx','fix>  alt text · 9 mouse-only controls → buttons · trap released'],
+    ['ag','human> approved 34 fixes · sandbox re-run on boat.dev'],
+    ['ok','agent> "Add to cart, button." Cart. Checkout. Place order.'],
+    ['ok','PASS  "Order placed!" · score 73/100 · evidence chain ✓'],
   ];
   const tx=document.getElementById('tx');
   const arc=document.getElementById('dialArc'),dn=document.getElementById('dialNum');const C=540.35;
@@ -551,11 +551,11 @@ h2 em{font-style:italic;color:var(--beacon)}
         const caret=document.createElement('span');caret.className='caret';
         let k=0;const speed=line.length>50?16:22;
         (function type(){d.textContent=line.slice(0,k);d.appendChild(caret);k++;if(k<=line.length)later(type,speed);else later(()=>caret.remove(),250);})();
-        if(li===0)animDial(0,27,1400);
+        if(li===0)animDial(0,10,1400);
         if(li===5)stepOn(0);
         if(li===6)stepOn(1);
         if(li===8)stepOn(2);
-        if(li===10){stepOn(3);animDial(27,96,1800);}
+        if(li===10){stepOn(3);animDial(10,73,1800);}
       },t);
       t+=line.length*(line.length>50?16:22)+520;
     });

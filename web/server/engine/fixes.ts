@@ -62,7 +62,7 @@ function altFromContext(node: ViolationNode, transcript: Utterance[], siteName: 
   if (node.rect) {
     const near = transcript
       .filter((u) => (u.role === 'heading' || u.role === 'text') && u.rect && u.rect.y >= node.rect!.y - 10 && u.rect.y <= node.rect!.y + node.rect!.h + 160 && Math.abs(u.rect.x - node.rect!.x) < 260)
-      .sort((a, b) => a.rect.y - b.rect.y)[0];
+      .sort((a, b) => (a.role === 'heading' ? 0 : 1) - (b.role === 'heading' ? 0 : 1) || a.rect.y - b.rect.y)[0];
     if (near?.name) return near.name.slice(0, 90);
   }
   if (file && !file.startsWith('data:')) return file.replace(/\.\w+$/, '').replace(/[-_]+/g, ' ');
@@ -180,10 +180,31 @@ export function buildFixes(scan: Scan): Fix[] {
 
 /** Builds the sandbox-only verification patch. This is never shipped to production as an overlay. */
 export function buildPatchScript(fixes: Fix[]): string {
-  const ops = fixes.filter((f) => f.approved !== false).map((f) => f.patch).filter((p) => p && p.op !== 'none' && p.op !== 'structure');
+  const ops = fixes.filter((f) => f.approved !== false).map((f) => f.patch).filter((p) => p && p.op !== 'none');
   return `(() => {
   const OPS = ${JSON.stringify(ops)};
   const q = (s) => { try { return document.querySelector(s); } catch { return null; } };
+  const structure = () => {
+    const tagOf = (e) => (e.id || '') + ' ' + (typeof e.className === 'string' ? e.className : '');
+    const landmark = (e) => /^(HEADER|NAV|MAIN|FOOTER|ASIDE|SCRIPT|STYLE|NOSCRIPT)$/.test(e.tagName) || e.getAttribute('role') || /header|topbar|masthead|footer|chat|widget|toast|modal|drawer|dialog|announce/i.test(tagOf(e));
+    for (const e of Array.from(document.body.children)) {
+      if (e.getAttribute('role')) continue;
+      if (/header|topbar|masthead/i.test(tagOf(e)) && !document.querySelector('header,[role=banner]')) e.setAttribute('role', 'banner');
+      else if (/footer/i.test(tagOf(e)) && !document.querySelector('footer,[role=contentinfo]')) e.setAttribute('role', 'contentinfo');
+      else if (/chat|widget|toast|modal|drawer|dialog|announce/i.test(tagOf(e))) e.setAttribute('role', 'region'), e.setAttribute('aria-label', (tagOf(e).match(/chat|announce|drawer|modal|dialog/i) || ['Panel'])[0]);
+    }
+    document.querySelectorAll('div,ul').forEach((e) => { if (!e.getAttribute('role') && /(^|\s|-)nav(\s|-|$)|navbar|menu/i.test(tagOf(e)) && e.querySelector('a') && !document.querySelector('nav,[role=navigation]')) e.setAttribute('role', 'navigation'); });
+    if (!document.querySelector('main,[role=main]')) {
+      const kids = Array.from(document.body.children).filter((e) => !landmark(e));
+      if (kids.length) { const m = document.createElement('main'); kids[0].before(m); kids.forEach((k) => m.appendChild(k)); }
+    }
+    if (!document.querySelector('h1,[role=heading][aria-level="1"]')) {
+      let best = null, size = 0;
+      document.querySelectorAll('main *, body > *').forEach((e) => { if (e.children.length === 0 && (e.textContent || '').trim().length > 3) { const fs = parseFloat(getComputedStyle(e).fontSize); if (fs > size) { size = fs; best = e; } } });
+      if (best) { best.setAttribute('role', 'heading'); best.setAttribute('aria-level', '1'); }
+    }
+  };
+  let structured = false;
   const apply = () => {
     for (const o of OPS) {
       if (o.op === 'lang') document.documentElement.setAttribute('lang', o.value);
@@ -200,6 +221,16 @@ export function buildPatchScript(fixes: Fix[]): string {
       else if (o.op === 'untrap') {
         if (!window.__fhUntrap) { window.__fhUntrap = true; window.addEventListener('keydown', (e) => { if (e.key === 'Tab' && e.target && e.target.matches && e.target.matches(o.sel)) e.stopImmediatePropagation(); }, true); }
       }
+    }
+    if (!structured && document.body && OPS.some((o) => o.op === 'structure')) { structured = true; structure(); }
+    if (OPS.some((o) => o.op === 'control')) {
+      // Dynamic content (drawers, modals) gets the same fix: every mouse-only control becomes a real button.
+      document.querySelectorAll('[onclick]:not(button):not(a):not(input):not(select):not(textarea), .btn:not(button):not(a)').forEach((el) => {
+        if (el.dataset.fhFixed || el.getAttribute('role')) return;
+        el.dataset.fhFixed = '1'; el.setAttribute('role', 'button'); el.setAttribute('tabindex', '0');
+        if (!(el.textContent || '').trim() && !el.getAttribute('aria-label')) { const c = ((el.id || '') + ' ' + (el.className || '') + ' ' + (el.getAttribute('onclick') || '')).toLowerCase(); el.setAttribute('aria-label', /cart|bag/.test(c) ? 'Shopping cart' : /search/.test(c) ? 'Search' : /account|user/.test(c) ? 'Account' : /close/.test(c) ? 'Close' : /menu/.test(c) ? 'Menu' : 'Button'); }
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); } });
+      });
     }
     // WCAG 4.1.3 status messages: expose toast-like notifications to screen readers.
     document.querySelectorAll('[class*=toast],[class*=snackbar],[id*=toast]').forEach((el) => { if (!el.getAttribute('role')) el.setAttribute('role', 'status'); });

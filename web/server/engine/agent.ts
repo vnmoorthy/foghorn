@@ -35,6 +35,9 @@ function heuristic(goal: string, items: Utterance[], prev: { id?: string; name?:
   const allHeard = heard.join(' ');
   if (/order placed|thank you for your order|order confirmed|thanks for subscribing/i.test(allHeard))
     return { thought: 'The screen reader announced a confirmation.', speak: `I heard: “${allHeard.slice(0, 80)}”. Task complete.`, action: 'done' };
+  const pageText = items.filter((u) => u.role === 'text' || u.role === 'heading').map((u) => u.name).join(' ');
+  if (prev.some((p) => p.action === 'activate' && p.name && /place order|pay|complete|submit order|buy now/i.test(p.name)) && /order placed|thank you for your order|order confirmed/i.test(pageText))
+    return { thought: 'Reading the page, I hear the order confirmation.', speak: 'I hear: “Order placed!” I bought the raincoat, without seeing the screen.', action: 'done' };
   const controls = items.filter((u) => ['button', 'link', 'textbox', 'searchbox', 'combobox', 'checkbox'].includes(u.role) && u.name);
   const did = (re: RegExp) => prev.some((p) => p.action === 'activate' && p.name && re.test(p.name));
   const typed = new Set(prev.filter((p) => p.action === 'type').map((p) => p.id));
@@ -56,7 +59,7 @@ function heuristic(goal: string, items: Utterance[], prev: { id?: string; name?:
       }
     }
     if (did(/checkout|check out/i)) {
-      const field = controls.find((c) => ['textbox', 'searchbox'].includes(c.role) && !typed.has(c.id) && SAMPLE.some(([re]) => re.test(c.name)) && !/search|chat|message|newsletter|subscribe/i.test(c.name));
+      const field = controls.find((c) => ['textbox', 'searchbox'].includes(c.role) && !typed.has(c.id) && SAMPLE.some(([re]) => re.test(c.name)) && !/search|chat|message|newsletter|subscribe/i.test(c.name) && !/newsletter|subscribe|footer|chat/i.test(c.sel || ''));
       if (field) {
         const v = SAMPLE.find(([re]) => re.test(field.name))![1];
         return { thought: `The form asks for “${field.name}”.`, speak: `Filling in “${field.name}”.`, action: 'type', id: field.id, text: v };
@@ -101,7 +104,7 @@ export async function runBlindAgent(scan: Scan, goal: string, opts: { patch?: st
   const ctx = await newContext(opts.patch);
   const page: Page = await ctx.newPage();
   const history: string[] = [];
-  const max = opts.maxSteps ?? 9;
+  const max = opts.maxSteps ?? 14;
   try {
     await gotoSafe(page, scan.url);
     for (let n = 1; n <= max; n++) {
