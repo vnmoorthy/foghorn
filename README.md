@@ -184,24 +184,38 @@ Create `web/.env`:
 
 ## Deploy on boat.dev
 
+One command creates a boat.dev VM, clones Foghorn, builds it, starts it with the VM's own Chrome, and serves it on a public HTTPS URL:
+
 ```bash
-# 1. Install the boat CLI
-curl -fsSL https://boat.dev/install | sh
-
-# 2. Create a VM
-boat new --type default
-
-# 3. Clone the repo onto it
-boat exec <id> "git clone https://github.com/vnmoorthy/foghorn"
-
-# 4. Build and start the server
-boat exec <id> --cwd foghorn/web --detach "npm i && npm run build && PORT=8787 npm start"
-
-# 5. Expose it
-boat host <id> 8787 --public
+curl -fsSL https://boat.dev/install | sh        # install the boat CLI, then: boat onboard
+boat new --name foghorn-live --host 8787:public \
+  --file setup.sh=deploy/boat-setup.sh --setup-file deploy/boat-setup.sh
 ```
 
-Set `PUBLIC_URL` to the hosted URL so Context.dev webhooks reach your instance.
+`boat info <id>` shows `setupStatus`. The script prints `FOGHORN_READY` when the server answers, and logs go to `/home/user/foghorn.log` on the VM. Set `PUBLIC_URL` to the hosted URL so Context.dev webhooks reach your instance.
+
+<details><summary>Step by step instead</summary>
+
+```bash
+boat new --type default                                   # prints bx_…
+boat exec <id> "git clone https://github.com/vnmoorthy/foghorn"
+boat exec <id> --cwd foghorn/web --detach "npm ci && npx vite build && PORT=8787 FOGHORN_ON_BOAT=1 npm start"
+boat host <id> 8787 --public
+```
+</details>
+
+**Live desktops:** with `BOAT_API_KEY` set, Foghorn starts one boat.dev VM, reuses it for every scan, opens the audited site on its desktop, and embeds the live 60 fps stream next to the results. Reusing one VM keeps it within the trial's 2-sandbox limit.
+
+## Project status
+
+| | Status |
+|---|---|
+| Scan engine, 6 personas, blind agent, fixes, sandbox verification, evidence ledger, monitors | ✅ Working, with an automated UI click-through (34/34 checks) |
+| Live replay (GitHub Pages) | ✅ [vnmoorthy.github.io/foghorn](https://vnmoorthy.github.io/foghorn/) |
+| Pitch deck + 3-minute storyboard | ✅ [deck](https://vnmoorthy.github.io/foghorn/deck/) · [STORYBOARD.md](deck/STORYBOARD.md) · [PPTX](deck/Foghorn-Pitch.pptx) |
+| NY Token Exchange (blind-agent brain, AI fixes) | 🔑 Add `NYTE_API_KEY`. Without it, Foghorn uses a deterministic agent policy and deterministic fixes. |
+| Context.dev (site mapping, change monitors) | 🔑 Add `CONTEXT_DEV_API_KEY`. Without it, Foghorn crawls links itself and runs a local 15-second watcher. |
+| boat.dev (live VM desktops, hosting) | 🔑 Add `BOAT_API_KEY` and an active plan. Without them, Foghorn uses local Chrome. |
 
 ## API reference
 
