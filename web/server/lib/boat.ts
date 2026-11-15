@@ -8,7 +8,7 @@ export const boatStats = { sandboxes: 0, provider: 'local chromium' };
 const key = () => process.env.BOAT_API_KEY;
 export const boatAvailable = () => !!key();
 export function initBoat() {
-  boatStats.provider = key() ? 'boat.dev cloud VMs' : 'local chromium (add BOAT_API_KEY)';
+  boatStats.provider = process.env.FOGHORN_ON_BOAT ? 'boat.dev cloud VM (this server)' : key() ? 'boat.dev cloud VMs' : 'local chromium (add BOAT_API_KEY)';
   return boatStats.provider;
 }
 

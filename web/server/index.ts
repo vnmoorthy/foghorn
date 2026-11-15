@@ -47,7 +47,7 @@ app.get('/api/status', (_req, res) => {
   res.json({
     ok: true, uptime: Math.round((Date.now() - startedAt) / 1000),
     providers: providers(),
-    keys: { nyte: llmAvailable() && llmStats.provider === 'NY Token Exchange', llm: llmAvailable(), context: contextAvailable(), boat: boatAvailable() },
+    keys: { nyte: llmAvailable() && llmStats.provider === 'NY Token Exchange', llm: llmAvailable(), context: contextAvailable(), boat: boatAvailable() || !!process.env.FOGHORN_ON_BOAT },
     llm: { ...llmStats, costUsd: +(llmStats.costMicro / 1e6).toFixed(5), privacy: llmStats.provider === 'NY Token Exchange' ? (process.env.NYTE_PRIVACY || 'zdr') : 'n/a' },
     context: contextStats, boat: boatStats,
     scans: listScans().length,
@@ -76,26 +76,35 @@ function normalizeUrl(u: string, req: express.Request) {
   return new URL(u).toString();
 }
 
+// One shared boat.dev VM (with a live desktop) is reused across scans, so audits stay within plan limits.
+let sharedVm: { id: string; startedAt: number } | null = null;
+let vmBooting: Promise<{ id: string; startedAt: number }> | null = null;
+async function getSharedVm() {
+  if (sharedVm) {
+    try { await waitReady(sharedVm.id, 15000); return { vm: sharedVm, fresh: false }; } catch { sharedVm = null; }
+  }
+  if (!vmBooting) vmBooting = (async () => { const id = await createSandbox(7200); await waitReady(id); sharedVm = { id, startedAt: Date.now() }; return sharedVm; })().finally(() => { vmBooting = null; });
+  return { vm: await vmBooting, fresh: true };
+}
+const vmReachableUrl = (u: string) => u.replace(/^http:\/\/localhost:\d+\/demo\/([a-z-]+)$/, (_m, n) => `https://vnmoorthy.github.io/foghorn/demo/${n}.html`);
+
 async function attachVm(scan: Scan) {
-  if (!boatAvailable()) return;
+  if (!boatAvailable() || process.env.FOGHORN_NO_VM) return;
   try {
     const t0 = Date.now();
     emit(scan.id, { type: 'vm', vm: { status: 'provisioning' } });
-    const id = await createSandbox(1800);
-    scan.vm = { id, startedAt: Date.now(), ratePerHour: 0.036, status: 'provisioning' };
-    evidence(scan, 'vm.create', { provider: 'boat.dev', sandbox: id });
-    emit(scan.id, { type: 'vm', vm: scan.vm });
-    await waitReady(id);
-    scan.vm.status = 'ready';
-    const url = await desktopUrl(id);
-    scan.vm.desktopUrl = url;
+    const { vm, fresh } = await getSharedVm();
+    scan.vm = { id: vm.id, startedAt: vm.startedAt, ratePerHour: 0.036, status: 'ready' };
+    evidence(scan, fresh ? 'vm.create' : 'vm.reuse', { provider: 'boat.dev', sandbox: vm.id });
     // Open the audited site on the VM's desktop so the audience can watch the agent's machine live.
-    await fetch(`${process.env.BOAT_API_BASE || 'https://boat.dev/api/v1'}/sandboxes/${id}/commands`, {
+    await fetch(`${process.env.BOAT_API_BASE || 'https://boat.dev/api/v1'}/sandboxes/${vm.id}/commands`, {
       method: 'POST', headers: { Authorization: `Bearer ${process.env.BOAT_API_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ command: `export DISPLAY=\${DISPLAY:-:0}; (google-chrome --no-first-run --start-maximized '${scan.url.replace(/'/g, '')}' >/dev/null 2>&1 &) ; echo ok`, detached: true }),
+      body: JSON.stringify({ command: `export DISPLAY=\${DISPLAY:-:0}; pkill -f 'foghorn-view' ; (google-chrome --user-data-dir=/tmp/foghorn-view --no-first-run --start-maximized '${vmReachableUrl(scan.url).replace(/'/g, '')}' >/dev/null 2>&1 &) ; echo ok`, detached: true }),
+      signal: AbortSignal.timeout(30000),
     }).catch(() => {});
+    scan.vm.desktopUrl = await desktopUrl(vm.id);
     emit(scan.id, { type: 'vm', vm: scan.vm });
-    evidence(scan, 'vm.ready', { sandbox: id, bootMs: Date.now() - t0 });
+    evidence(scan, 'vm.ready', { sandbox: vm.id, readyMs: Date.now() - t0 });
     persist();
   } catch (e) {
     emit(scan.id, { type: 'log', msg: `boat.dev VM unavailable: ${(e as Error).message.slice(0, 120)}` });
